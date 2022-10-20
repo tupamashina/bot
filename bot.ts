@@ -1,46 +1,25 @@
-import { COMMANDS, START_CAPTION, TESTS } from './constants.ts';
-import {
-  appointmentConversation,
-  appointmentConversationId,
-} from './conversations/appointment.ts';
 import { grammy, grammyConversation } from './deps.ts';
-import { Context } from './types.ts';
+import { commands } from './commands/index.ts';
+import { conversations } from './conversations/index.ts';
+import { queries } from './queries/index.ts';
+import { Context, Session } from './types/bot.ts';
+import { studentMiddleware } from './middlewares/student.ts';
 
 export const bot = new grammy.Bot<Context>(Deno.env.get('BOT_TOKEN')!);
 
 bot.use(
-  grammy.session({ initial: () => ({}) }),
+  grammy.session({ initial: (): Session => ({}) }),
+  studentMiddleware,
   grammyConversation.conversations(),
-  grammyConversation.createConversation(appointmentConversation),
+  ...Object.entries(conversations).map(([id, conversation]) =>
+    grammyConversation.createConversation(conversation, id)
+  ),
 );
 
-bot.command('start', (context) =>
-  context.replyWithPhoto(
-    'https://www.tltsu.ru/upload/dev2fun_opengraph/930/93066a7c788ed7206279c66d6a12b508.jpg',
-    {
-      caption: `Привет, ${
-        context.message?.from.first_name || 'незнакомец'
-      }! ${START_CAPTION}`,
-    },
-  ));
+for (const [name, command] of Object.entries(commands)) {
+  bot.command(name, command);
+}
 
-bot.command('help', (context) => context.reply(COMMANDS));
-
-bot.command(
-  'appointment',
-  (context) => context.conversation.enter(appointmentConversationId),
-);
-
-bot.command(
-  'tests',
-  (context) =>
-    context.reply('Тесты:', {
-      reply_markup: Object.entries(TESTS).reduce(
-        (prevKeyboard, [text, url], index) => {
-          const keyboard = prevKeyboard.url(text, url);
-          return !(index % 2) ? keyboard.row() : keyboard;
-        },
-        new grammy.InlineKeyboard(),
-      ),
-    }),
-);
+for (const [trigger, query] of Object.entries(queries)) {
+  bot.callbackQuery(trigger, query);
+}
