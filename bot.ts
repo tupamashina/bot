@@ -23,3 +23,9 @@ for (const [name, command] of Object.entries(commands)) {
 for (const [trigger, query] of Object.entries(queries)) {
   bot.callbackQuery(trigger, query);
 }
+
+bot.api.setMyCommands(
+  Object.entries(commands).map((
+    [command, { description }],
+  ) => ({ command, description })),
+);

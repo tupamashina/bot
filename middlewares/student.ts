@@ -6,11 +6,9 @@ export const studentMiddleware: grammy.MiddlewareFn<Context> = async (
   context,
   next,
 ) => {
-  if (!context.session.student) {
-    context.session.student = await students.findOne({
-      telegramId: context.message?.from?.id,
-    });
-  }
+  context.session.student = await students.findOne({
+    telegramId: context.message?.from?.id,
+  });
 
   return next();
 };

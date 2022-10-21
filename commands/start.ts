@@ -18,3 +18,5 @@ export const startCommand: Command = async (context, next) => {
 
   return next();
 };
+
+startCommand.description = 'Запустить бота';
