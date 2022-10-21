@@ -19,12 +19,6 @@ export const codeWordInputConversation: Conversation = async (
   conversation,
   context,
 ) => {
-  if (!context.session.student) {
-    return await context.reply(
-      'Зарегистрируйся, чтобы ввести кодовое слово.',
-    );
-  }
-
   await context.reply('Введи кодовое слово:');
 
   while (true) {
@@ -36,14 +30,14 @@ export const codeWordInputConversation: Conversation = async (
       continue;
     }
 
-    if (context.session.student.usedWords.includes(word)) {
+    if (context.session.student!.usedWords.includes(word)) {
       await context.reply('Ты уже использовал это слово, попробуй ещё раз:');
       continue;
     }
 
     await conversation.external(() =>
       students.updateOne({
-        _id: new mongo.ObjectId(context.session.student?._id),
+        _id: new mongo.ObjectId(context.session.student!._id),
       }, {
         $inc: { stars: 1 },
         $addToSet: { usedWords: { $each: [word] } },
