@@ -2,7 +2,7 @@ import { students } from '../collections.ts';
 import { mongo } from '../deps.ts';
 import { Conversation } from '../types/bot.ts';
 
-const codeWords: string[] = [
+const codeWords = [
   'Потрошеный',
   'Лесник',
   'Сослепа',

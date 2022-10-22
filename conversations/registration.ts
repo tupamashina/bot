@@ -1,5 +1,6 @@
 import { students } from '../collections.ts';
 import { Conversation } from '../types/bot.ts';
+import { Role } from '../types/schemas.ts';
 import { getSuccessfulRegistrationReply } from '../utils/getSuccessfulRegistrationReply.ts';
 
 export const registrationConversation: Conversation = async (
@@ -26,6 +27,7 @@ export const registrationConversation: Conversation = async (
         stars: 0,
         hearts: 3,
         usedWords: [],
+        role: Role.STUDENT,
         telegramId: message.from.id,
       })
     );
