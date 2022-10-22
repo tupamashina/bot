@@ -18,4 +18,4 @@ export const personalCabinetCommand: Command = async (context, next) => {
   return next();
 };
 
-personalCabinetCommand.description = 'Войти в личный кабинет';
+personalCabinetCommand.description = 'Личный кабинет';

@@ -27,7 +27,7 @@ export const registrationConversation: Conversation = async (
         stars: 0,
         hearts: 3,
         usedWords: [],
-        role: Role.STUDENT,
+        role: Role.SLAVE,
         telegramId: message.from.id,
       })
     );

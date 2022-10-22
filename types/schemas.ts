@@ -5,8 +5,8 @@ interface MongoSchema {
 }
 
 export enum Role {
-  STUDENT = 'STUDENT',
-  ASHOT = 'ASHOT',
+  SLAVE = 'SLAVE',
+  MASTER = 'MASTER',
 }
 
 export interface StudentSchema extends MongoSchema {

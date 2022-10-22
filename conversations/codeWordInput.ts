@@ -22,15 +22,14 @@ export const codeWordInputConversation: Conversation = async (
   await context.reply('Введи кодовое слово:');
 
   while (true) {
-    const { message } = await conversation.waitFor('message:text');
-    const word = message.text.trim();
+    const { message: { text } } = await conversation.waitFor('message:text');
 
-    if (!codeWords.includes(word)) {
+    if (!codeWords.includes(text)) {
       await context.reply('Неверное кодовое слово, попробуй ещё раз:');
       continue;
     }
 
-    if (context.session.student!.usedWords.includes(word)) {
+    if (context.session.student!.usedWords.includes(text)) {
       await context.reply('Ты уже использовал это слово, попробуй ещё раз:');
       continue;
     }
@@ -40,7 +39,7 @@ export const codeWordInputConversation: Conversation = async (
         _id: new mongo.ObjectId(context.session.student!._id),
       }, {
         $inc: { stars: 1 },
-        $addToSet: { usedWords: { $each: [word] } },
+        $addToSet: { usedWords: { $each: [text] } },
       })
     );
 

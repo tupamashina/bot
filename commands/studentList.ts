@@ -3,7 +3,7 @@ import { Command } from '../types/bot.ts';
 import { Role } from '../types/schemas.ts';
 
 export const studentListCommand: Command = async (context, next) => {
-  if (context.session.student?.role !== Role.ASHOT) {
+  if (context.session.student?.role !== Role.MASTER) {
     await context.reply(
       'У тебя недостаточно прав для выполнения этой команды(',
     );
@@ -11,8 +11,9 @@ export const studentListCommand: Command = async (context, next) => {
     const allStudents = await students.find().toArray();
 
     await context.reply(
-      allStudents.map(({ name, group, stars, hearts, usedWords }) =>
+      allStudents.map(({ _id, name, group, stars, hearts, usedWords }) =>
         [
+          `Id - ${_id}`,
           `Имя - ${name}`,
           `Группа - ${group}`,
           `Звёзды - ${stars}`,

@@ -1,6 +1,7 @@
 import { cancelCommand } from './cancel.ts';
 import { codeWordCommand } from './codeWord.ts';
 import { personalCabinetCommand } from './personalCabinet.ts';
+import { punishTheStudentCommand } from './punishTheStudent.ts';
 import { startCommand } from './start.ts';
 import { studentListCommand } from './studentList.ts';
 
@@ -10,4 +11,5 @@ export const commands = {
   code_word: codeWordCommand,
   cancel: cancelCommand,
   student_list: studentListCommand,
+  punish_the_student: punishTheStudentCommand,
 };

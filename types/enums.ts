@@ -5,4 +5,5 @@ export enum QueryTrigger {
 export enum ConversationId {
   REGISTRATION = 'REGISTRATION',
   CODE_WORD_INPUT = 'CODE_WORD_INPUT',
+  STUDENT_PUNISHMENT = 'STUDENT_PUNISHMENT',
 }
