@@ -6,7 +6,6 @@ import { studentMiddleware } from './middlewares/student.ts';
 import { conversationsMiddlewares } from './middlewares/conversations.ts';
 
 export const bot = new grammy.Bot<Context>(Deno.env.get('BOT_TOKEN')!);
-bot.catch(console.error);
 
 bot.use(
   grammy.session({ initial: (): Session => ({}) }),
