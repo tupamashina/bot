@@ -28,6 +28,7 @@ export const registrationConversation: Conversation = async (
         hearts: 3,
         usedWords: [],
         role: Role.SLAVE,
+        chatId: message.chat.id,
         telegramId: message.from.id,
       })
     );

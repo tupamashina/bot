@@ -11,10 +11,11 @@ export enum Role {
 
 export interface StudentSchema extends MongoSchema {
   role: Role;
-  telegramId: number;
   name: string;
   group: string;
-  hearts: number;
   stars: number;
+  hearts: number;
+  chatId: number;
+  telegramId: number;
   usedWords: string[];
 }

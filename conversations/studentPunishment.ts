@@ -1,4 +1,3 @@
-import { conversations } from 'https://deno.land/x/grammy_conversations@v1.0.3/conversation.ts';
 import { students } from '../collections.ts';
 import { mongo } from '../deps.ts';
 import { Conversation } from '../types/bot.ts';
@@ -31,6 +30,11 @@ export const studentPunishmentConversation: Conversation = async (
 
     await conversation.external(() =>
       students.updateOne({ _id: studentId }, { $inc: { hearts: -1 } })
+    );
+
+    await context.api.sendMessage(
+      student.chatId,
+      'Упс! У тебя -1 ❤️, старайся лучше.',
     );
 
     break;

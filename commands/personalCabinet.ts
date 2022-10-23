@@ -9,8 +9,8 @@ export const personalCabinetCommand: Command = async (context, next) => {
     await context.reply(
       [
         `${student.name}, ${student.group}\n`,
-        `❤️ - ${student.hearts}`,
-        `⭐ - ${student.stars}`,
+        `❤️: ${student.hearts}`,
+        `⭐: ${student.stars}`,
       ].join('\n'),
     );
   }
