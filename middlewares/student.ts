@@ -6,7 +6,7 @@ export const studentMiddleware: grammy.MiddlewareFn<Context> = async (
   context,
   next,
 ) => {
-   const student = await students.findOne({
+  const student = await students.findOne({
     telegramId: context.from?.id,
   });
 
@@ -15,7 +15,7 @@ export const studentMiddleware: grammy.MiddlewareFn<Context> = async (
 
     if (typeof chatId === 'number' && student.chatId !== chatId) {
       await students.updateOne({ _id: new mongo.ObjectId(student._id) }, {
-        chatId,
+        $set: { chatId },
       });
 
       student.chatId = chatId;
