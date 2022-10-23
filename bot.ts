@@ -20,7 +20,7 @@ for (const [name, command] of Object.entries(commands)) {
   bot.command(name, command);
 }
 
-for (const [trigger, query] of Object.entries(queries)) {
+for (const [trigger, query] of queries.entries()) {
   bot.callbackQuery(trigger, query);
 }
 
