@@ -23,8 +23,14 @@ export const studentListCommand: Command = async (context, next) => {
           {
             reply_markup: new grammy.InlineKeyboard().text(
               '+1 ⭐',
-              `reward_the_student:${_id}`,
-            ).text('-1 ❤️', `punish_the_student:${_id}`),
+              `plus_star:${_id}`,
+            ).text('-1 ⭐', `minus_star:${_id}`).row().text(
+              '-1 ❤️',
+              `minus_heart:${_id}`,
+            ).text(
+              '+1 ❤️',
+              `plus_heart:${_id}`,
+            ),
           },
         )
       ),
