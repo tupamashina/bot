@@ -94,20 +94,22 @@ exports.Prisma.AdminScalarFieldEnum = makeEnum({
   tgUserId: 'tgUserId'
 });
 
+exports.Prisma.ComplaintScalarFieldEnum = makeEnum({
+  id: 'id',
+  text: 'text',
+  reason: 'reason',
+  fromId: 'fromId',
+  aboutId: 'aboutId'
+});
+
 exports.Prisma.MentorScalarFieldEnum = makeEnum({
   id: 'id',
   name: 'name',
+  group: 'group',
   isApproved: 'isApproved',
   tgChatId: 'tgChatId',
   tgUserId: 'tgUserId',
-  tgUsername: 'tgUsername',
-  projectId: 'projectId'
-});
-
-exports.Prisma.ProjectScalarFieldEnum = makeEnum({
-  id: 'id',
-  name: 'name',
-  description: 'description'
+  tgUsername: 'tgUsername'
 });
 
 exports.Prisma.QueryMode = makeEnum({
@@ -130,19 +132,23 @@ exports.Prisma.StudentScalarFieldEnum = makeEnum({
   tgChatId: 'tgChatId',
   tgUserId: 'tgUserId',
   tgUsername: 'tgUsername',
-  projectId: 'projectId'
+  mentorId: 'mentorId'
 });
 
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
-
+exports.ComplaintReason = makeEnum({
+  EXCEEDING_AUTHORITY: 'EXCEEDING_AUTHORITY',
+  TRANSFER_PROHIBITION: 'TRANSFER_PROHIBITION',
+  LABOR_EXPLOITATION: 'LABOR_EXPLOITATION'
+});
 
 exports.Prisma.ModelName = makeEnum({
-  Project: 'Project',
   Student: 'Student',
   Mentor: 'Mentor',
-  Admin: 'Admin'
+  Admin: 'Admin',
+  Complaint: 'Complaint'
 });
 
 /**

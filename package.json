@@ -1,5 +1,5 @@
 {
-  "name": "my-prisma-project",
+  "name": "tgu_project_bot",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -13,6 +13,7 @@
     "prisma": "^4.5.0"
   },
   "dependencies": {
-    "@prisma/client": "^4.5.0"
+    "@prisma/client": "^4.5.0",
+    "dotenv-cli": "^6.0.0"
   }
 }

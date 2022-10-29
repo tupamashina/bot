@@ -9,16 +9,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Project {
-  id BigInt @id @default(autoincrement())
-
-  name        String
-  description String @db.String(100)
-
-  mentor   Mentor?
-  students Student[]
-}
-
 model Student {
   id BigInt @id @default(autoincrement())
 
@@ -33,22 +23,25 @@ model Student {
   tgUserId   BigInt  @unique
   tgUsername String? @unique
 
-  projectId BigInt?
-  project   Project? @relation(fields: [projectId], references: [id])
+  mentorId BigInt
+  mentor   Mentor @relation(fields: [mentorId], references: [id])
+
+  complaints Complaint[]
 }
 
 model Mentor {
   id BigInt @id @default(autoincrement())
 
   name       String
+  group      String
   isApproved Boolean @default(false)
 
   tgChatId   BigInt  @unique
   tgUserId   BigInt  @unique
   tgUsername String? @unique
 
-  projectId BigInt?  @unique
-  project   Project? @relation(fields: [projectId], references: [id])
+  students   Student[]
+  complaints Complaint[]
 }
 
 model Admin {
@@ -56,4 +49,23 @@ model Admin {
 
   tgChatId BigInt @unique
   tgUserId BigInt @unique
+}
+
+enum ComplaintReason {
+  EXCEEDING_AUTHORITY
+  TRANSFER_PROHIBITION
+  LABOR_EXPLOITATION
+}
+
+model Complaint {
+  id BigInt @id @default(autoincrement())
+
+  text   String
+  reason ComplaintReason
+
+  fromId BigInt
+  from   Student @relation(fields: [fromId], references: [id])
+
+  aboutId BigInt
+  about   Mentor @relation(fields: [aboutId], references: [id])
 }

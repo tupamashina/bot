@@ -1,32 +1,31 @@
+import { callbacks } from './callbacks/mod.ts';
+import { commands } from './commands/mod.ts';
 import { grammy, grammyConversation } from './deps.ts';
-import { commands } from './commands/index.ts';
-import { queries } from './queries/index.ts';
-import { Context, Session } from './types/bot.ts';
-import { studentMiddleware } from './middlewares/student.ts';
-import { conversationsMiddlewares } from './middlewares/conversations.ts';
+import { middlewares } from './middlewares/mod.ts';
+import { Context } from './types/Context.ts';
+import { Session } from './types/Session.ts';
 
 export const bot = new grammy.Bot<Context>(Deno.env.get('BOT_TOKEN')!);
 
 bot.use(
-  grammy.session({ initial: (): Session => ({}) }),
-  studentMiddleware,
+  grammy.session({ initial: (): Session => ({ user: null }) }),
   grammyConversation.conversations(),
+  ...middlewares,
 );
 
-bot.command('cancel', (context) => context.conversation.exit());
-bot.use(...conversationsMiddlewares);
-
-for (const [name, command] of Object.entries(commands)) {
-  bot.command(name, command);
+for (const [trigger, handler] of callbacks) {
+  bot.callbackQuery(trigger, ...(Array.isArray(handler) ? handler : [handler]));
 }
 
-for (const [trigger, query] of queries.entries()) {
-  bot.callbackQuery(trigger, query);
+for (const [command, handler] of commands) {
+  bot.command(command, ...(Array.isArray(handler) ? handler : [handler]));
 }
 
-bot.api.setMyCommands([
-  ...Object.entries(commands).map((
-    [command, { description }],
-  ) => ({ command, description })),
-  { command: 'cancel', description: 'Прервать выполнение текущей команды' },
-]);
+bot.api.setMyCommands(
+  Array.from(commands.entries()).map(([command, handler]) => ({
+    command: Array.isArray(command) ? command[0] : command,
+    description: Array.isArray(handler)
+      ? handler[0].description
+      : handler.description,
+  })),
+);

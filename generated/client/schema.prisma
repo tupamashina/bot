@@ -9,7 +9,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id  BigInt @id @default(autoincrement())
-  age Int
+model Project {
+  id BigInt @id @default(autoincrement())
+
+  name        String
+  description String @db.String(100)
+
+  mentor   Mentor?
+  students Student[]
+}
+
+model Student {
+  id BigInt @id @default(autoincrement())
+
+  name       String
+  group      String
+  isApproved Boolean @default(false)
+
+  stars  Int @default(0) @db.Int2
+  hearts Int @default(3) @db.Int2
+
+  tgChatId   BigInt  @unique
+  tgUserId   BigInt  @unique
+  tgUsername String? @unique
+
+  projectId BigInt?
+  project   Project? @relation(fields: [projectId], references: [id])
+}
+
+model Mentor {
+  id BigInt @id @default(autoincrement())
+
+  name       String
+  isApproved Boolean @default(false)
+
+  tgChatId   BigInt  @unique
+  tgUserId   BigInt  @unique
+  tgUsername String? @unique
+
+  projectId BigInt?  @unique
+  project   Project? @relation(fields: [projectId], references: [id])
+}
+
+model Admin {
+  id BigInt @id @default(autoincrement())
+
+  tgChatId BigInt @unique
+  tgUserId BigInt @unique
 }

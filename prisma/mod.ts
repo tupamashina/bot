@@ -1,2 +1,3 @@
-import { PrismaClient } from '../generated/client/deno/edge.ts';
-export const prisma = new PrismaClient();
+import { prisma } from '../deps.ts';
+
+export const prismaClient = new prisma.PrismaClient();
