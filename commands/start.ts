@@ -1,26 +1,9 @@
-import { grammy } from '../deps.ts';
 import { isMentor } from '../guards/isMentor.ts';
 import { isStudent } from '../guards/isStudent.ts';
-import { CallbackTrigger } from '../types/Callbacks.ts';
+import { projectCreationMenu } from '../menus/projectCreation.ts';
+import { registrationMenu } from '../menus/registration.ts';
+import { signingUpForProjectMenu } from '../menus/signingUpForProject.ts';
 import { Command } from '../types/Commands.ts';
-
-const unregisteredUserKeyboard = new grammy.InlineKeyboard().text(
-  'Я участник',
-  CallbackTrigger.REGISTER_STUDENT,
-).text(
-  'Я куратор',
-  CallbackTrigger.REGISTER_MENTOR,
-);
-
-const mentorWithoutProjectKeyboard = new grammy.InlineKeyboard().text(
-  'Создать проект',
-  CallbackTrigger.CREATE_PROJECT,
-);
-
-const studentWithoutProjectKeyboard = new grammy.InlineKeyboard().text(
-  'Записаться в проект',
-  CallbackTrigger.SIGN_UP_FOR_PROJECT,
-);
 
 export const startCommand: Command = async (context, next) => {
   const { user } = context.session;
@@ -45,11 +28,11 @@ export const startCommand: Command = async (context, next) => {
           : 'Ты уже зарегистрирован, поэтому выбирай команду в меню и за работу. Удачи!',
       ].join('\n\n'),
       reply_markup: !isRegistered
-        ? unregisteredUserKeyboard
+        ? registrationMenu
         : isMentorWithoutProject
-        ? mentorWithoutProjectKeyboard
+        ? projectCreationMenu
         : isStudentWithoutProject
-        ? studentWithoutProjectKeyboard
+        ? signingUpForProjectMenu
         : undefined,
     },
   );

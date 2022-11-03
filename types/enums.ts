@@ -1,0 +1,6 @@
+export enum StudentManagementAction {
+  INCREMENT_STARS,
+  DECREMENT_STARS,
+  INCREMENT_HEARTS,
+  DECREMENT_HEARTS,
+}

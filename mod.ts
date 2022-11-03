@@ -1,7 +1,7 @@
-import 'https://deno.land/x/dotenv@v3.2.0/load.ts';
 import { serve } from 'https://deno.land/std@0.159.0/http/server.ts';
 import { bot } from './bot.ts';
 import { grammy } from './deps.ts';
+import { loadEnv } from './env.ts';
 
 // ============== Патч для правильной работы json'а с bigint'ами ==============
 const { stringify: originalStringify, parse: originalParse } = JSON;
@@ -15,33 +15,33 @@ JSON.stringify = (value) =>
 JSON.parse = (text) =>
   originalParse(
     text,
-    (_, value) => {
-      try {
-        if (typeof value === 'string' && /^-?\d+n$/.test(value)) {
-          return BigInt(value.slice(0, -1));
-        }
-
-        return value;
-      } catch {
-        return value;
-      }
-    },
+    (_, value) => /^-?\d+n$/.test(value) ? BigInt(value.slice(0, -1)) : value,
   );
-
 // ============================================================================
 
-const handleUpdate = grammy.webhookCallback(bot, 'std/http');
+const isDev = Deno.env.get('ENV') === 'development';
+loadEnv(isDev);
 
-serve(async (req) => {
-  if (req.method === 'POST') {
-    if (new URL(req.url).pathname.slice(1) === bot.token) {
-      try {
-        return await handleUpdate(req);
-      } catch (error) {
-        console.error(error);
+if (isDev) {
+  bot.catch(console.error);
+  bot.start();
+} else {
+  const handleUpdate = grammy.webhookCallback(bot, 'std/http');
+
+  serve((req) => {
+    if (req.method === 'POST') {
+      if (new URL(req.url).pathname.slice(1) === bot.token) {
+        try {
+          return handleUpdate(req);
+        } catch (error) {
+          console.error(error);
+        }
       }
     }
-  }
 
-  return new Response();
-});
+    return new Response();
+  }, {
+    onListen: ({ hostname, port }) =>
+      console.info(`Server is listening on ${hostname}:${port}`),
+  });
+}

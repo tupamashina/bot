@@ -2,16 +2,18 @@ import { prismaClient } from '../prisma/mod.ts';
 import { Callback } from '../types/Callbacks.ts';
 
 export const approveStudentCallback: Callback = async (context, next) => {
-  const { tgChatId } = await prismaClient.student.update({
-    where: { id: BigInt(context.callbackQuery.data.split(':')[1]) },
+  const params = new URLSearchParams(context.callbackQuery.data.split('?')[1]);
+
+  const { name, tgChatId } = await prismaClient.student.update({
+    where: { id: BigInt(params.get('id')!) },
     data: { isApproved: true },
   });
 
-  await context.reply('✅ Студент подтверждён.');
+  await context.reply(`✅ Участник ${name} принят.`);
 
   await context.api.sendMessage(
     Number(tgChatId),
-    '✅ Куратор принял тебя в проект.',
+    'Поздравляю, ты принят в проект!',
   );
 
   return next();

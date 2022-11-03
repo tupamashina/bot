@@ -1,88 +1,72 @@
-import { grammy, prisma } from '../deps.ts';
+import { prisma } from '../deps.ts';
 import { isAdmin } from '../guards/isAdmin.ts';
 import { isMentor } from '../guards/isMentor.ts';
 import { isStudent } from '../guards/isStudent.ts';
-import { CallbackTrigger } from '../types/Callbacks.ts';
+import { adminCabinetMenu } from '../menus/adminCabinet.ts';
+import { mentorCabinetMenu } from '../menus/mentorCabinet.ts';
+import { projectCreationMenu } from '../menus/projectCreation.ts';
+import { signingUpForProjectMenu } from '../menus/signingUpForProject.ts';
+import { studentCabinetMenu } from '../menus/studentCabinet.ts';
 import { Command } from '../types/Commands.ts';
 
-const adminKeyboard = new grammy.InlineKeyboard().text(
-  'Новые кураторы',
-  CallbackTrigger.NEW_MENTORS,
-);
-
-const mentorWithoutProjectKeyboard = new grammy.InlineKeyboard().text(
-  'Создать проект',
-  CallbackTrigger.CREATE_PROJECT,
-);
-
-const approvedMentorKeyboard = new grammy.InlineKeyboard().text(
-  'Новые студенты',
-  CallbackTrigger.NEW_STUDENTS,
-);
-
-const studentWithoutProjectKeyboard = new grammy.InlineKeyboard().text(
-  'Записаться в проект',
-  CallbackTrigger.SIGN_UP_FOR_PROJECT,
-);
-
 export const personalCabinetCommand: Command = async (context, next) => {
-  const { user } = context.session;
-
   try {
-    if (!user) {
-      return context.reply(
+    const { session } = context;
+
+    if (!session.user) {
+      return await context.reply(
         '⛔️ Для входа в личный кабинет необходимо зарегистрироваться.',
       );
     }
 
-    if (isAdmin(user)) {
-      return context.reply('Пока не придумал, что тут должно быть)', {
-        reply_markup: adminKeyboard,
+    if (isAdmin(session.user)) {
+      // TODO
+      return await context.reply('Кабинет админа', {
+        reply_markup: adminCabinetMenu,
       });
     }
 
-    if (isMentor(user)) {
-      if (!(user as prisma.Mentor).projectId) {
-        return context.reply(
-          '⛔️ Для входа в личный кабинет необходимо создать проект.',
-          { reply_markup: mentorWithoutProjectKeyboard },
-        );
-      }
+    if (isMentor(session.user)) {
+      const user = session.user as prisma.Mentor;
 
-      if ((user as prisma.Mentor).isApproved) {
-        return context.reply('Пока не придумал, что тут должно быть)', {
-          reply_markup: approvedMentorKeyboard,
+      if (!user.projectId) {
+        await context.reply('Сначала создай проект.', {
+          reply_markup: projectCreationMenu,
+        });
+      } else if (!user.isApproved) {
+        await context.reply('Сначала дождись проверки от администрации.');
+      } else {
+        await context.reply('Кабинет куратора', {
+          reply_markup: mentorCabinetMenu,
         });
       }
 
-      return context.reply(
-        '⛔️ Для входа в личный кабинет необходимо дождаться результатов проверки администрации.',
-      );
+      return;
     }
 
-    if (isStudent(user)) {
-      if (!(user as prisma.Student).projectId) {
-        return context.reply(
-          '⛔️ Для входа в личный кабинет необходимо записаться в проект.',
-          { reply_markup: studentWithoutProjectKeyboard },
-        );
-      }
+    if (isStudent(session.user)) {
+      const user = session.user as prisma.Student;
 
-      if ((user as prisma.Student).isApproved) {
-        return context.reply(
+      if (!user.projectId) {
+        await context.reply('Сначала запишись в проект.', {
+          reply_markup: signingUpForProjectMenu,
+        });
+      } else if (!user.isApproved) {
+        await context.reply(
+          'Сначала дождись, пока куратор примет тебя в проект.',
+        );
+      } else {
+        await context.reply(
           [
-            `${(user as prisma.Student).name}, ${
-              (user as prisma.Student).group
-            }\n`,
-            `Звёзды - ${(user as prisma.Student).stars}`,
-            `Сердца - ${(user as prisma.Student).hearts}`,
+            `${user.name}, ${user.group}\n`,
+            `⭐: ${user.stars}`,
+            `❤️: ${user.hearts}`,
           ].join('\n'),
+          { reply_markup: studentCabinetMenu },
         );
       }
 
-      return context.reply(
-        '⛔️ Для входа в личный кабинет необходимо дождаться подтверждения заявки куратором проекта.',
-      );
+      return;
     }
   } finally {
     await next();

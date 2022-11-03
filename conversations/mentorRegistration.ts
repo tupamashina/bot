@@ -1,6 +1,5 @@
-import { grammy } from '../deps.ts';
+import { projectCreationMenu } from '../menus/projectCreation.ts';
 import { prismaClient } from '../prisma/mod.ts';
-import { CallbackTrigger } from '../types/Callbacks.ts';
 import { Conversation } from '../types/Conversations.ts';
 
 export const mentorRegistrationConversation: Conversation = async (
@@ -26,11 +25,6 @@ export const mentorRegistrationConversation: Conversation = async (
 
   await context.reply(
     'Отлично, ты зарегистрирован. Теперь давай создадим проект.',
-    {
-      reply_markup: new grammy.InlineKeyboard().text(
-        'Создать проект',
-        CallbackTrigger.CREATE_PROJECT,
-      ),
-    },
+    { reply_markup: projectCreationMenu },
   );
 };

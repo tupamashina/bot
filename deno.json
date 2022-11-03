@@ -3,5 +3,9 @@
     "options": {
       "singleQuote": true
     }
+  },
+  "tasks": {
+    "prisma-push": "deno run -A --unstable npm:prisma db push",
+    "prisma-generate": "deno run -A --unstable npm:prisma generate --data-proxy"
   }
 }

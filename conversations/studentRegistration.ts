@@ -1,6 +1,5 @@
-import { grammy } from '../deps.ts';
+import { signingUpForProjectMenu } from '../menus/signingUpForProject.ts';
 import { prismaClient } from '../prisma/mod.ts';
-import { CallbackTrigger } from '../types/Callbacks.ts';
 import { Conversation } from '../types/Conversations.ts';
 
 export const studentRegistrationConversation: Conversation = async (
@@ -33,11 +32,6 @@ export const studentRegistrationConversation: Conversation = async (
 
   await context.reply(
     'Отлично, ты зарегистрирован. Теперь давай запишемся в проект.',
-    {
-      reply_markup: new grammy.InlineKeyboard().text(
-        'Записаться в проект',
-        CallbackTrigger.SIGN_UP_FOR_PROJECT,
-      ),
-    },
+    { reply_markup: signingUpForProjectMenu },
   );
 };

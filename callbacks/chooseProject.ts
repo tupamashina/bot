@@ -2,24 +2,22 @@ import { prismaClient } from '../prisma/mod.ts';
 import { Callback } from '../types/Callbacks.ts';
 
 export const chooseProjectCallback: Callback = async (context, next) => {
-  const { project } = await prismaClient.student.update({
-    where: { id: context.session.user?.id },
-    select: { project: { select: { mentor: true } } },
-    data: {
-      project: {
-        connect: { id: BigInt(context.callbackQuery.data.split(':')[1]) },
-      },
-    },
+  const params = new URLSearchParams(context.callbackQuery.data.split('?')[1]);
+
+  const { name, mentor } = await prismaClient.project.update({
+    where: { id: BigInt(params.get('id')!) },
+    select: { name: true, mentor: { select: { tgChatId: true } } },
+    data: { students: { connect: { id: context.session.user!.id } } },
   });
 
   await context.reply(
-    'Отлично, ты записан в проект, осталось только дождаться подтверждения от куратора.' +
-      ' Пока можешь расслабиться, я уведомлю тебя, как только это произойдёт.',
+    `Отлично, ты записался в проект ${name}, осталось только дождаться, пока ` +
+      'куратор тебя примет. Я уведомлю тебя, когда это произойдёт.',
   );
 
   await context.api.sendMessage(
-    Number(project?.mentor?.tgChatId),
-    '❗️Новый студент хочет записаться к тебе в проект.',
+    Number(mentor!.tgChatId),
+    '❗️К тебе в проект хочет записаться новый участник.',
   );
 
   return next();
