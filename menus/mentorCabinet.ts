@@ -1,7 +1,7 @@
 import { grammy, prisma } from '../deps.ts';
 import { prismaClient } from '../prisma/mod.ts';
 import { CallbackTrigger } from '../types/Callbacks.ts';
-import { StudentManagementAction } from '../types/Enums.ts';
+import { StudentManagementAction } from '../types/enums.ts';
 import { Menu, MenuId } from '../types/Menu.ts';
 import { generateCodeWord, getCodeWordList } from '../utils/codeWords.ts';
 
