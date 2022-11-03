@@ -1,6 +1,6 @@
 import { prismaClient } from '../prisma/mod.ts';
 import { Callback } from '../types/Callbacks.ts';
-import { StudentManagementAction } from '../types/Enums.ts';
+import { StudentManagementAction } from '../types/enums.ts';
 
 export const manageStudentCallback: Callback = async (context, next) => {
   const params = new URLSearchParams(context.callbackQuery.data.split('?')[1]);
