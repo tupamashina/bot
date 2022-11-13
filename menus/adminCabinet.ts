@@ -1,9 +1,14 @@
+import { mentorDeletionConversation } from '../conversations/mentorDeletion.ts';
+import { studentDeletionConversation } from '../conversations/studentDeletion.ts';
 import { grammy } from '../deps.ts';
 import { prismaClient } from '../prisma/mod.ts';
 import { CallbackTrigger } from '../types/Callbacks.ts';
-import { Menu, MenuId } from '../types/Menu.ts';
+import { createMenu } from '../utils/createMenu.ts';
 
-export const adminCabinetMenu = new Menu(MenuId.ADMIN_CABINET).text(
+export const adminCabinetMenu = createMenu([
+  mentorDeletionConversation,
+  studentDeletionConversation,
+]).text(
   'Рейтинг проектов',
   async (context, next) => {
     const [projects, amountsOfProjectStars] = await Promise.all([
@@ -68,4 +73,16 @@ export const adminCabinetMenu = new Menu(MenuId.ADMIN_CABINET).text(
   }
 
   return next();
-});
+}).row().text(
+  'Удалить куратора',
+  async (context, next) => {
+    await context.conversation.enter(mentorDeletionConversation.id);
+    return next();
+  },
+).text(
+  'Удалить студента',
+  async (context, next) => {
+    await context.conversation.enter(studentDeletionConversation.id);
+    return next();
+  },
+);

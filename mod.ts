@@ -1,4 +1,4 @@
-import "https://deno.land/x/dotenv@v3.2.0/load.ts";
+import 'https://deno.land/x/dotenv@v3.2.0/load.ts';
 import { serve } from 'https://deno.land/std@0.159.0/http/server.ts';
 import { bot } from './bot.ts';
 import { grammy } from './deps.ts';

@@ -1,11 +1,9 @@
-import { ConversationId } from '../types/Conversations.ts';
-import { Menu, MenuId } from '../types/Menu.ts';
+import { mentorRegistrationConversation } from '../conversations/mentorRegistration.ts';
+import { studentRegistrationConversation } from '../conversations/studentRegistration.ts';
+import { MenuTextBtnHandler } from '../types-new/Menu.ts';
+import { createMenu } from '../utils/createMenu.ts';
 
-type TextBtnHandler = Parameters<Menu['text']>[1];
-
-const createTextBtnHandler = (
-  conversationId: ConversationId,
-): TextBtnHandler => {
+const createTextBtnHandler = (conversationId: string): MenuTextBtnHandler => {
   return async (context, next) => {
     if (context.session.user) {
       await context.reply(
@@ -19,6 +17,9 @@ const createTextBtnHandler = (
   };
 };
 
-export const registrationMenu = new Menu(MenuId.REGISTRATION)
-  .text('Я участник', createTextBtnHandler(ConversationId.STUDENT_REGISTRATION))
-  .text('Я куратор', createTextBtnHandler(ConversationId.MENTOR_REGISTRATION));
+export const registrationMenu = createMenu([
+  studentRegistrationConversation,
+  mentorRegistrationConversation,
+])
+  .text('Я участник', createTextBtnHandler(studentRegistrationConversation.id))
+  .text('Я куратор', createTextBtnHandler(mentorRegistrationConversation.id));

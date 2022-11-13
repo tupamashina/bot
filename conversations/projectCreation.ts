@@ -1,7 +1,7 @@
 import { prismaClient } from '../prisma/mod.ts';
-import { Conversation } from '../types/Conversations.ts';
+import { createConversation } from '../utils/createConversation.ts';
 
-export const projectCreationConversation: Conversation = async (
+export const projectCreationConversation = createConversation(async (
   conversation,
   context,
 ) => {
@@ -12,7 +12,7 @@ export const projectCreationConversation: Conversation = async (
   );
 
   await context.reply(
-    'Расскажи мне о нём поподробнее (но не больше 100 символов❗️)',
+    'Расскажи мне о нём поподробнее (но не больше 100 символов❗️):',
   );
 
   while (true) {
@@ -53,4 +53,4 @@ export const projectCreationConversation: Conversation = async (
 
     break;
   }
-};
+});

@@ -2,8 +2,8 @@ import { grammy, prisma } from '../deps.ts';
 import { prismaClient } from '../prisma/mod.ts';
 import { CallbackTrigger } from '../types/Callbacks.ts';
 import { StudentManagementAction } from '../types/enums.ts';
-import { Menu, MenuId } from '../types/Menu.ts';
 import { generateCodeWord, getCodeWordList } from '../utils/codeWords.ts';
+import { createMenu } from '../utils/createMenu.ts';
 
 const getCallbackTrigger = (id: bigint, action: StudentManagementAction) => {
   const params = new URLSearchParams({
@@ -33,7 +33,7 @@ const createKeyboard = (id: bigint) =>
       getCallbackTrigger(id, StudentManagementAction.INCREMENT_HEARTS),
     );
 
-export const mentorCabinetMenu = new Menu(MenuId.MENTOR_CABINET).text(
+export const mentorCabinetMenu = createMenu().text(
   'Новые участники',
   async (context, next) => {
     const students = await prismaClient.student.findMany({

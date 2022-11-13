@@ -1,19 +1,10 @@
 import { callbacks } from './callbacks/mod.ts';
 import { commands } from './commands/mod.ts';
-import { codeWordInputConversation } from './conversations/codeWordInput.ts';
-import { mentorRegistrationConversation } from './conversations/mentorRegistration.ts';
-import { projectCreationConversation } from './conversations/projectCreation.ts';
-import { studentRegistrationConversation } from './conversations/studentRegistration.ts';
+import { conversations } from './conversations/mod.ts';
 import { grammy, grammyConversation } from './deps.ts';
-import { adminCabinetMenu } from './menus/adminCabinet.ts';
-import { mentorCabinetMenu } from './menus/mentorCabinet.ts';
-import { projectCreationMenu } from './menus/projectCreation.ts';
-import { registrationMenu } from './menus/registration.ts';
-import { signingUpForProjectMenu } from './menus/signingUpForProject.ts';
-import { studentCabinetMenu } from './menus/studentCabinet.ts';
+import { menus } from './menus/mod.ts';
 import { sessionMiddleware } from './middlewares/sessionMiddleware.ts';
 import { Context } from './types/Context.ts';
-import { ConversationId } from './types/Conversations.ts';
 import { Session } from './types/Session.ts';
 
 export const bot = new grammy.Bot<Context>(Deno.env.get('BOT_TOKEN')!);
@@ -30,28 +21,15 @@ bot.command('cancel', async (context) => {
 });
 
 bot.use(
-  grammyConversation.createConversation(
-    codeWordInputConversation,
-    ConversationId.CODE_WORD_INPUT,
+  ...[...conversations, ...menus].sort((a, b) => {
+    if (a.dependencies.includes(b)) return 1;
+    if (b.dependencies.includes(a)) return -1;
+    return 0;
+  }).map((middleware) =>
+    'builder' in middleware
+      ? grammyConversation.createConversation(middleware.builder, middleware.id)
+      : middleware
   ),
-  studentCabinetMenu,
-  mentorCabinetMenu,
-  adminCabinetMenu,
-  grammyConversation.createConversation(
-    projectCreationConversation,
-    ConversationId.PROJECT_CREATION,
-  ),
-  signingUpForProjectMenu,
-  projectCreationMenu,
-  grammyConversation.createConversation(
-    studentRegistrationConversation,
-    ConversationId.STUDENT_REGISTRATION,
-  ),
-  grammyConversation.createConversation(
-    mentorRegistrationConversation,
-    ConversationId.MENTOR_REGISTRATION,
-  ),
-  registrationMenu,
 );
 
 for (const [trigger, handler] of callbacks) {

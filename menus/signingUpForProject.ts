@@ -2,9 +2,9 @@ import { grammy } from '../deps.ts';
 import { isStudent } from '../guards/isStudent.ts';
 import { prismaClient } from '../prisma/mod.ts';
 import { CallbackTrigger } from '../types/Callbacks.ts';
-import { Menu, MenuId } from '../types/Menu.ts';
+import { createMenu } from '../utils/createMenu.ts';
 
-export const signingUpForProjectMenu = new Menu(MenuId.SIGNING_UP_FOR_PROJECT)
+export const signingUpForProjectMenu = createMenu()
   .text('Записаться в проект', async (context, next) => {
     try {
       let errorMessage: string | undefined;

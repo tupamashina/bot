@@ -1,18 +1,15 @@
-import { ConversationId, Conversations } from '../types/Conversations.ts';
+import { codeWordInputConversation } from './codeWordInput.ts';
+import { mentorDeletionConversation } from './mentorDeletion.ts';
 import { mentorRegistrationConversation } from './mentorRegistration.ts';
 import { projectCreationConversation } from './projectCreation.ts';
+import { studentDeletionConversation } from './studentDeletion.ts';
 import { studentRegistrationConversation } from './studentRegistration.ts';
 
-export const conversations: Conversations = new Map();
-
-conversations.set(
-  ConversationId.MENTOR_REGISTRATION,
+export const conversations = [
+  codeWordInputConversation,
+  mentorDeletionConversation,
   mentorRegistrationConversation,
-);
-
-conversations.set(
-  ConversationId.STUDENT_REGISTRATION,
+  projectCreationConversation,
+  studentDeletionConversation,
   studentRegistrationConversation,
-);
-
-conversations.set(ConversationId.PROJECT_CREATION, projectCreationConversation);
+];

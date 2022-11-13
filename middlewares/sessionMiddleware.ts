@@ -11,6 +11,5 @@ export const sessionMiddleware: Middleware = async (context, next) => {
   ]);
 
   context.session.user = admin || mentor || student;
-
   return next();
 };

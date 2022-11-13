@@ -1,8 +1,8 @@
 import { projectCreationMenu } from '../menus/projectCreation.ts';
 import { prismaClient } from '../prisma/mod.ts';
-import { Conversation } from '../types/Conversations.ts';
+import { createConversation } from '../utils/createConversation.ts';
 
-export const mentorRegistrationConversation: Conversation = async (
+export const mentorRegistrationConversation = createConversation(async (
   conversation,
   context,
 ) => {
@@ -27,4 +27,4 @@ export const mentorRegistrationConversation: Conversation = async (
     'Отлично, ты зарегистрирован. Теперь давай создадим проект.',
     { reply_markup: projectCreationMenu },
   );
-};
+}, [projectCreationMenu]);
