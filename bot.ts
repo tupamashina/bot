@@ -22,14 +22,24 @@ bot.command('cancel', async (context) => {
 
 bot.use(
   ...[...conversations, ...menus].sort((a, b) => {
-    if (a.dependencies.includes(b)) return 1;
-    if (b.dependencies.includes(a)) return -1;
+    if (
+      a.dependencies.includes(b) ||
+      a.dependencies.some((dependency) => dependency.dependencies.includes(b))
+    ) return 1;
+
+    if (
+      b.dependencies.includes(a) ||
+      b.dependencies.some((dependency) => dependency.dependencies.includes(a))
+    ) return -1;
+
     return 0;
-  }).map((middleware) =>
-    'builder' in middleware
+  }).map((middleware) => {
+    console.log(middleware.id);
+
+    return 'builder' in middleware
       ? grammyConversation.createConversation(middleware.builder, middleware.id)
-      : middleware
-  ),
+      : middleware;
+  }),
 );
 
 for (const [trigger, handler] of callbacks) {

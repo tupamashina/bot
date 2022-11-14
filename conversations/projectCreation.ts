@@ -21,7 +21,7 @@ export const projectCreationConversation = createConversation(async (
     );
 
     if (description.length > 100) {
-      await context.reply('В сообщение больше 100 символов, попробуй ещё раз:');
+      await context.reply('В сообщении больше 100 символов, попробуй ещё раз:');
       continue;
     }
 

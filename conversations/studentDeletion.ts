@@ -15,7 +15,7 @@ export const studentDeletionConversation = createConversation(
             `Id - ${id}`,
             `Имя - ${name}`,
             `Группа - ${group}`,
-            `Проекта - ${project?.name}`,
+            `Проект - ${project?.name}`,
           ]
             .join(
               '\n',
