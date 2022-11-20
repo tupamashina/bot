@@ -1,9 +1,12 @@
+import { array } from 'https://esm.sh/toposort@2.0.2';
 import { callbacks } from './callbacks/mod.ts';
 import { commands } from './commands/mod.ts';
 import { conversations } from './conversations/mod.ts';
-import { grammy, grammyConversation } from './deps.ts';
+import { grammy, grammyConversation, grammyMenu } from './deps.ts';
 import { menus } from './menus/mod.ts';
 import { sessionMiddleware } from './middlewares/sessionMiddleware.ts';
+import { Conversation } from './types-new/Conversation.ts';
+import { Menu } from './types-new/Menu.ts';
 import { Context } from './types/Context.ts';
 import { Session } from './types/Session.ts';
 
@@ -20,26 +23,21 @@ bot.command('cancel', async (context) => {
   await context.reply('Действие отменено.');
 });
 
+type PluginMiddleware = Conversation | Menu;
+const pluginMiddlewareNodes: PluginMiddleware[] = [...conversations, ...menus];
+
+const pluginMiddlewareEdges = pluginMiddlewareNodes.map((node) =>
+  node.dependencies.map((dependency) =>
+    [dependency, node] as [PluginMiddleware, PluginMiddleware]
+  )
+).flat();
+
 bot.use(
-  ...[...conversations, ...menus].sort((a, b) => {
-    if (
-      a.dependencies.includes(b) ||
-      a.dependencies.some((dependency) => dependency.dependencies.includes(b))
-    ) return 1;
-
-    if (
-      b.dependencies.includes(a) ||
-      b.dependencies.some((dependency) => dependency.dependencies.includes(a))
-    ) return -1;
-
-    return 0;
-  }).map((middleware) => {
-    console.log(middleware.id);
-
-    return 'builder' in middleware
-      ? grammyConversation.createConversation(middleware.builder, middleware.id)
-      : middleware;
-  }),
+  ...array(pluginMiddlewareNodes, pluginMiddlewareEdges).map((middleware) =>
+    middleware instanceof grammyMenu.Menu
+      ? middleware
+      : grammyConversation.createConversation(middleware.builder, middleware.id)
+  ),
 );
 
 for (const [trigger, handler] of callbacks) {
