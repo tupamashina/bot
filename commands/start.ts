@@ -26,6 +26,7 @@ export const startCommand: Command = async (context, next) => {
           : isStudentWithoutProject
           ? 'Ты уже зарегистрирован, но ещё не записался в проект.'
           : 'Ты уже зарегистрирован, поэтому выбирай команду в меню и за работу. Удачи!',
+        'Также можешь посмотреть небольшой гайд по использованию бота: https://vk.com/video/@tupamashina?z=video184711348_456239171',
       ].join('\n\n'),
       reply_markup: !isRegistered
         ? registrationMenu
