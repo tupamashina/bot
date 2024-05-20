@@ -3,66 +3,36 @@
  * Client
 **/
 
-import * as runtime from '.././runtime/index.d.ts';
-declare const prisma: unique symbol
-export type PrismaPromise<A> = Promise<A> & {[prisma]: true}
-type UnwrapPromise<P extends any> = P extends Promise<infer R> ? R : P
-type UnwrapTuple<Tuple extends readonly unknown[]> = {
-  [K in keyof Tuple]: K extends `${number}` ? Tuple[K] extends PrismaPromise<infer X> ? X : UnwrapPromise<Tuple[K]> : UnwrapPromise<Tuple[K]>
-};
+import * as runtime from '.././runtime/library.d.ts';
+import $Types = runtime.Types // general types
+import $Public = runtime.Types.Public
+import $Utils = runtime.Types.Utils
+import $Extensions = runtime.Types.Extensions
+import $Result = runtime.Types.Result
+
+export type PrismaPromise<T> = $Public.PrismaPromise<T>
 
 
 /**
  * Model Project
  * 
  */
-export type Project = {
-  id: bigint
-  name: string
-  description: string
-}
-
+export type Project = $Result.DefaultSelection<Prisma.$ProjectPayload>
 /**
  * Model Student
  * 
  */
-export type Student = {
-  id: bigint
-  name: string
-  group: string
-  isApproved: boolean
-  stars: number
-  hearts: number
-  tgChatId: bigint
-  tgUserId: bigint
-  tgUsername: string | null
-  projectId: bigint | null
-}
-
+export type Student = $Result.DefaultSelection<Prisma.$StudentPayload>
 /**
  * Model Mentor
  * 
  */
-export type Mentor = {
-  id: bigint
-  name: string
-  isApproved: boolean
-  tgChatId: bigint
-  tgUserId: bigint
-  tgUsername: string | null
-  projectId: bigint | null
-}
-
+export type Mentor = $Result.DefaultSelection<Prisma.$MentorPayload>
 /**
  * Model Admin
  * 
  */
-export type Admin = {
-  id: bigint
-  tgChatId: bigint
-  tgUserId: bigint
-}
-
+export type Admin = $Result.DefaultSelection<Prisma.$AdminPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -81,34 +51,9 @@ export type Admin = {
 export class PrismaClient<
   T extends Prisma.PrismaClientOptions = Prisma.PrismaClientOptions,
   U = 'log' extends keyof T ? T['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<T['log']> : never : never,
-  GlobalReject extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined = 'rejectOnNotFound' extends keyof T
-    ? T['rejectOnNotFound']
-    : false
-      > {
-      /**
-       * @private
-       */
-      private fetcher;
-      /**
-       * @private
-       */
-      private readonly dmmf;
-      /**
-       * @private
-       */
-      private connectionPromise?;
-      /**
-       * @private
-       */
-      private disconnectionPromise?;
-      /**
-       * @private
-       */
-      private readonly engineConfig;
-      /**
-       * @private
-       */
-      private readonly measurePerformance;
+  ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+> {
+  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['other'] }
 
     /**
    * ##  Prisma Client ʲˢ
@@ -126,20 +71,22 @@ export class PrismaClient<
    */
 
   constructor(optionsArg ?: Prisma.Subset<T, Prisma.PrismaClientOptions>);
-  $on<V extends (U | 'beforeExit')>(eventType: V, callback: (event: V extends 'query' ? Prisma.QueryEvent : V extends 'beforeExit' ? () => Promise<void> : Prisma.LogEvent) => void): void;
+  $on<V extends U>(eventType: V, callback: (event: V extends 'query' ? Prisma.QueryEvent : Prisma.LogEvent) => void): void;
 
   /**
    * Connect with the database
    */
-  $connect(): Promise<void>;
+  $connect(): $Utils.JsPromise<void>;
 
   /**
    * Disconnect from the database
    */
-  $disconnect(): Promise<void>;
+  $disconnect(): $Utils.JsPromise<void>;
 
   /**
    * Add a middleware
+   * @deprecated since 4.16.0. For new code, prefer client extensions instead.
+   * @see https://pris.ly/d/extensions
    */
   $use(cb: Prisma.Middleware): void
 
@@ -152,7 +99,7 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
    */
-  $executeRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): PrismaPromise<number>;
+  $executeRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<number>;
 
   /**
    * Executes a raw query and returns the number of affected rows.
@@ -164,7 +111,7 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
    */
-  $executeRawUnsafe<T = unknown>(query: string, ...values: any[]): PrismaPromise<number>;
+  $executeRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<number>;
 
   /**
    * Performs a prepared raw query and returns the `SELECT` data.
@@ -175,7 +122,7 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
    */
-  $queryRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): PrismaPromise<T>;
+  $queryRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<T>;
 
   /**
    * Performs a raw query and returns the `SELECT` data.
@@ -187,7 +134,7 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
    */
-  $queryRawUnsafe<T = unknown>(query: string, ...values: any[]): PrismaPromise<T>;
+  $queryRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<T>;
 
   /**
    * Allows the running of a sequence of read/write operations that are guaranteed to either succeed or fail as a whole.
@@ -202,7 +149,12 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/concepts/components/prisma-client/transactions).
    */
-  $transaction<P extends PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): Promise<UnwrapTuple<P>>;
+  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
+
+  $transaction<R>(fn: (prisma: Omit<PrismaClient, runtime.ITXClientDenyList>) => $Utils.JsPromise<R>, options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<R>
+
+
+  $extends: $Extensions.ExtendsHook<'extends', Prisma.TypeMapCb, ExtArgs>
 
       /**
    * `prisma.project`: Exposes CRUD operations for the **Project** model.
@@ -212,7 +164,7 @@ export class PrismaClient<
     * const projects = await prisma.project.findMany()
     * ```
     */
-  get project(): Prisma.ProjectDelegate<GlobalReject>;
+  get project(): Prisma.ProjectDelegate<ExtArgs>;
 
   /**
    * `prisma.student`: Exposes CRUD operations for the **Student** model.
@@ -222,7 +174,7 @@ export class PrismaClient<
     * const students = await prisma.student.findMany()
     * ```
     */
-  get student(): Prisma.StudentDelegate<GlobalReject>;
+  get student(): Prisma.StudentDelegate<ExtArgs>;
 
   /**
    * `prisma.mentor`: Exposes CRUD operations for the **Mentor** model.
@@ -232,7 +184,7 @@ export class PrismaClient<
     * const mentors = await prisma.mentor.findMany()
     * ```
     */
-  get mentor(): Prisma.MentorDelegate<GlobalReject>;
+  get mentor(): Prisma.MentorDelegate<ExtArgs>;
 
   /**
    * `prisma.admin`: Exposes CRUD operations for the **Admin** model.
@@ -242,11 +194,18 @@ export class PrismaClient<
     * const admins = await prisma.admin.findMany()
     * ```
     */
-  get admin(): Prisma.AdminDelegate<GlobalReject>;
+  get admin(): Prisma.AdminDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
   export import DMMF = runtime.DMMF
+
+  export type PrismaPromise<T> = $Public.PrismaPromise<T>
+
+  /**
+   * Validator
+   */
+  export import validator = runtime.Public.validator
 
   /**
    * Prisma Errors
@@ -277,19 +236,24 @@ export namespace Prisma {
   /**
    * Metrics 
    */
-  export import Metrics = runtime.Metrics
-  export import Metric = runtime.Metric
-  export import MetricHistogram = runtime.MetricHistogram
-  export import MetricHistogramBucket = runtime.MetricHistogramBucket
+  export type Metrics = runtime.Metrics
+  export type Metric<T> = runtime.Metric<T>
+  export type MetricHistogram = runtime.MetricHistogram
+  export type MetricHistogramBucket = runtime.MetricHistogramBucket
 
   /**
-   * Extensions
-   */
-  export type Extension = runtime.Extension 
+  * Extensions
+  */
+  export import Extension = $Extensions.UserArgs
+  export import getExtensionContext = runtime.Extensions.getExtensionContext
+  export import Args = $Public.Args
+  export import Payload = $Public.Payload
+  export import Result = $Public.Result
+  export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 4.5.0
-   * Query Engine version: 0362da9eebca54d94c8ef5edd3b2e90af99ba452
+   * Prisma Client JS version: 5.14.0
+   * Query Engine version: e9771e62de70f79a5e1c604a2d7c8e2a0a874b48
    */
   export type PrismaVersion = {
     client: string
@@ -345,7 +309,7 @@ export namespace Prisma {
    *
    * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-by-null-values
    */
-  export type InputJsonValue = string | number | boolean | InputJsonObject | InputJsonArray
+  export type InputJsonValue = string | number | boolean | InputJsonObject | InputJsonArray | { toJSON(): unknown }
 
   /**
    * Types of the values used to represent different kinds of `null` values when working with JSON fields.
@@ -415,19 +379,11 @@ export namespace Prisma {
     select: any
     include: any
   }
-  type HasSelect = {
+
+  type SelectAndOmit = {
     select: any
+    omit: any
   }
-  type HasInclude = {
-    include: any
-  }
-  type CheckSelect<T, S, U> = T extends SelectAndInclude
-    ? 'Please either choose `select` or `include`'
-    : T extends HasSelect
-    ? U
-    : T extends HasInclude
-    ? U
-    : S
 
   /**
    * Get the type of the value, that the Promise holds.
@@ -437,7 +393,7 @@ export namespace Prisma {
   /**
    * Get the return type of a function which returns a Promise.
    */
-  export type PromiseReturnType<T extends (...args: any) => Promise<any>> = PromiseType<ReturnType<T>>
+  export type PromiseReturnType<T extends (...args: any) => $Utils.JsPromise<any>> = PromiseType<ReturnType<T>>
 
   /**
    * From T, pick a set of properties whose keys are in the union K
@@ -453,9 +409,9 @@ export namespace Prisma {
     [K in keyof T]-?: {} extends Prisma__Pick<T, K> ? never : K
   }[keyof T]
 
-  export type TruthyKeys<T> = {
-    [key in keyof T]: T[key] extends false | undefined | null ? never : key
-  }[keyof T]
+  export type TruthyKeys<T> = keyof {
+    [K in keyof T as T[K] extends false | undefined | null ? never : K]: K
+  }
 
   export type TrueKeys<T> = TruthyKeys<Prisma__Pick<T, RequiredKeys<T>>>
 
@@ -477,7 +433,9 @@ export namespace Prisma {
   } &
     (T extends SelectAndInclude
       ? 'Please either choose `select` or `include`.'
-      : {})
+      : T extends SelectAndOmit
+        ? 'Please either choose `select` or `omit`.'
+        : {})
 
   /**
    * Subset + Intersection
@@ -653,19 +611,11 @@ export namespace Prisma {
 
   export type Keys<U extends Union> = U extends unknown ? keyof U : never
 
-  type Exact<A, W = unknown> = 
-  W extends unknown ? A extends Narrowable ? Cast<A, W> : Cast<
-  {[K in keyof A]: K extends keyof W ? Exact<A[K], W[K]> : never},
-  {[K in keyof W]: K extends keyof A ? Exact<A[K], W[K]> : W[K]}>
-  : never;
-
-  type Narrowable = string | number | boolean | bigint;
-
   type Cast<A, B> = A extends B ? A : B;
 
   export const type: unique symbol;
 
-  export function validator<V>(): <S>(select: Exact<S, V>) => S;
+
 
   /**
    * Used by group by
@@ -706,9 +656,9 @@ export namespace Prisma {
   type MaybeTupleToUnion<T> = T extends any[] ? TupleToUnion<T> : T
 
   /**
-   * Like `Pick`, but with an array
+   * Like `Pick`, but additionally can also accept an array of keys
    */
-  type PickArray<T, K extends Array<keyof T>> = Prisma__Pick<T, TupleToUnion<K>>
+  type PickEnumerable<T, K extends Enumerable<keyof T> | keyof T> = Prisma__Pick<T, MaybeTupleToUnion<K>>
 
   /**
    * Exclude all keys with underscores
@@ -716,19 +666,10 @@ export namespace Prisma {
   type ExcludeUnderscoreKeys<T extends string> = T extends `_${string}` ? never : T
 
 
-  export import FieldRef = runtime.FieldRef
+  export type FieldRef<Model, FieldType> = runtime.FieldRef<Model, FieldType>
 
   type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRef<Model, FieldType>
 
-  class PrismaClientFetcher {
-    private readonly prisma;
-    private readonly debug;
-    private readonly hooks?;
-    constructor(prisma: PrismaClient<any, any>, debug?: boolean, hooks?: Hooks | undefined);
-    request<T>(document: any, dataPath?: string[], rootField?: string, typeName?: string, isList?: boolean, callsite?: string): Promise<T>;
-    sanitizeMessage(message: string): string;
-    protected unpack(document: any, data: any, path: string[], rootField?: string, isList?: boolean): any;
-  }
 
   export const ModelName: {
     Project: 'Project',
@@ -744,55 +685,337 @@ export namespace Prisma {
     db?: Datasource
   }
 
-  export type RejectOnNotFound = boolean | ((error: Error) => Error)
-  export type RejectPerModel = { [P in ModelName]?: RejectOnNotFound }
-  export type RejectPerOperation =  { [P in "findUnique" | "findFirst"]?: RejectPerModel | RejectOnNotFound } 
-  type IsReject<T> = T extends true ? True : T extends (err: Error) => Error ? True : False
-  export type HasReject<
-    GlobalRejectSettings extends Prisma.PrismaClientOptions['rejectOnNotFound'],
-    LocalRejectSettings,
-    Action extends PrismaAction,
-    Model extends ModelName
-  > = LocalRejectSettings extends RejectOnNotFound
-    ? IsReject<LocalRejectSettings>
-    : GlobalRejectSettings extends RejectPerOperation
-    ? Action extends keyof GlobalRejectSettings
-      ? GlobalRejectSettings[Action] extends RejectOnNotFound
-        ? IsReject<GlobalRejectSettings[Action]>
-        : GlobalRejectSettings[Action] extends RejectPerModel
-        ? Model extends keyof GlobalRejectSettings[Action]
-          ? IsReject<GlobalRejectSettings[Action][Model]>
-          : False
-        : False
-      : False
-    : IsReject<GlobalRejectSettings>
-  export type ErrorFormat = 'pretty' | 'colorless' | 'minimal'
 
+  interface TypeMapCb extends $Utils.Fn<{extArgs: $Extensions.InternalArgs}, $Utils.Record<string, any>> {
+    returns: Prisma.TypeMap<this['params']['extArgs']>
+  }
+
+  export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    meta: {
+      modelProps: 'project' | 'student' | 'mentor' | 'admin'
+      txIsolationLevel: Prisma.TransactionIsolationLevel
+    },
+    model: {
+      Project: {
+        payload: Prisma.$ProjectPayload<ExtArgs>
+        fields: Prisma.ProjectFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProjectFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProjectFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload>
+          }
+          findFirst: {
+            args: Prisma.ProjectFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProjectFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload>
+          }
+          findMany: {
+            args: Prisma.ProjectFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload>[]
+          }
+          create: {
+            args: Prisma.ProjectCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload>
+          }
+          createMany: {
+            args: Prisma.ProjectCreateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProjectCreateManyAndReturnArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload>[]
+          }
+          delete: {
+            args: Prisma.ProjectDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload>
+          }
+          update: {
+            args: Prisma.ProjectUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload>
+          }
+          deleteMany: {
+            args: Prisma.ProjectDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProjectUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.ProjectUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload>
+          }
+          aggregate: {
+            args: Prisma.ProjectAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateProject>
+          }
+          groupBy: {
+            args: Prisma.ProjectGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<ProjectGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProjectCountArgs<ExtArgs>,
+            result: $Utils.Optional<ProjectCountAggregateOutputType> | number
+          }
+        }
+      }
+      Student: {
+        payload: Prisma.$StudentPayload<ExtArgs>
+        fields: Prisma.StudentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StudentFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$StudentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StudentFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$StudentPayload>
+          }
+          findFirst: {
+            args: Prisma.StudentFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$StudentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StudentFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$StudentPayload>
+          }
+          findMany: {
+            args: Prisma.StudentFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$StudentPayload>[]
+          }
+          create: {
+            args: Prisma.StudentCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$StudentPayload>
+          }
+          createMany: {
+            args: Prisma.StudentCreateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StudentCreateManyAndReturnArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$StudentPayload>[]
+          }
+          delete: {
+            args: Prisma.StudentDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$StudentPayload>
+          }
+          update: {
+            args: Prisma.StudentUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$StudentPayload>
+          }
+          deleteMany: {
+            args: Prisma.StudentDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StudentUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.StudentUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$StudentPayload>
+          }
+          aggregate: {
+            args: Prisma.StudentAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateStudent>
+          }
+          groupBy: {
+            args: Prisma.StudentGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<StudentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StudentCountArgs<ExtArgs>,
+            result: $Utils.Optional<StudentCountAggregateOutputType> | number
+          }
+        }
+      }
+      Mentor: {
+        payload: Prisma.$MentorPayload<ExtArgs>
+        fields: Prisma.MentorFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MentorFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$MentorPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MentorFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$MentorPayload>
+          }
+          findFirst: {
+            args: Prisma.MentorFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$MentorPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MentorFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$MentorPayload>
+          }
+          findMany: {
+            args: Prisma.MentorFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$MentorPayload>[]
+          }
+          create: {
+            args: Prisma.MentorCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$MentorPayload>
+          }
+          createMany: {
+            args: Prisma.MentorCreateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MentorCreateManyAndReturnArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$MentorPayload>[]
+          }
+          delete: {
+            args: Prisma.MentorDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$MentorPayload>
+          }
+          update: {
+            args: Prisma.MentorUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$MentorPayload>
+          }
+          deleteMany: {
+            args: Prisma.MentorDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MentorUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.MentorUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$MentorPayload>
+          }
+          aggregate: {
+            args: Prisma.MentorAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateMentor>
+          }
+          groupBy: {
+            args: Prisma.MentorGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<MentorGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MentorCountArgs<ExtArgs>,
+            result: $Utils.Optional<MentorCountAggregateOutputType> | number
+          }
+        }
+      }
+      Admin: {
+        payload: Prisma.$AdminPayload<ExtArgs>
+        fields: Prisma.AdminFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AdminFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AdminFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>
+          }
+          findFirst: {
+            args: Prisma.AdminFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AdminFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>
+          }
+          findMany: {
+            args: Prisma.AdminFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>[]
+          }
+          create: {
+            args: Prisma.AdminCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>
+          }
+          createMany: {
+            args: Prisma.AdminCreateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AdminCreateManyAndReturnArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>[]
+          }
+          delete: {
+            args: Prisma.AdminDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>
+          }
+          update: {
+            args: Prisma.AdminUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>
+          }
+          deleteMany: {
+            args: Prisma.AdminDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AdminUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.AdminUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>
+          }
+          aggregate: {
+            args: Prisma.AdminAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateAdmin>
+          }
+          groupBy: {
+            args: Prisma.AdminGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<AdminGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AdminCountArgs<ExtArgs>,
+            result: $Utils.Optional<AdminCountAggregateOutputType> | number
+          }
+        }
+      }
+    }
+  } & {
+    other: {
+      payload: any
+      operations: {
+        $executeRawUnsafe: {
+          args: [query: string, ...values: any[]],
+          result: any
+        }
+        $executeRaw: {
+          args: [query: TemplateStringsArray | Prisma.Sql, ...values: any[]],
+          result: any
+        }
+        $queryRawUnsafe: {
+          args: [query: string, ...values: any[]],
+          result: any
+        }
+        $queryRaw: {
+          args: [query: TemplateStringsArray | Prisma.Sql, ...values: any[]],
+          result: any
+        }
+      }
+    }
+  }
+  export const defineExtension: $Extensions.ExtendsHook<'define', Prisma.TypeMapCb, $Extensions.DefaultArgs>
+  export type DefaultPrismaClient = PrismaClient
+  export type ErrorFormat = 'pretty' | 'colorless' | 'minimal'
   export interface PrismaClientOptions {
-    /**
-     * Configure findUnique/findFirst to throw an error if the query returns null. 
-     * @deprecated since 4.0.0. Use `findUniqueOrThrow`/`findFirstOrThrow` methods instead.
-     * @example
-     * ```
-     * // Reject on both findUnique/findFirst
-     * rejectOnNotFound: true
-     * // Reject only on findFirst with a custom error
-     * rejectOnNotFound: { findFirst: (err) => new Error("Custom Error")}
-     * // Reject on user.findUnique with a custom error
-     * rejectOnNotFound: { findUnique: {User: (err) => new Error("User not found")}}
-     * ```
-     */
-    rejectOnNotFound?: RejectOnNotFound | RejectPerOperation
     /**
      * Overwrites the datasource url from your schema.prisma file
      */
     datasources?: Datasources
-
+    /**
+     * Overwrites the datasource url from your schema.prisma file
+     */
+    datasourceUrl?: string
     /**
      * @default "colorless"
      */
     errorFormat?: ErrorFormat
-
     /**
      * @example
      * ```
@@ -801,19 +1024,25 @@ export namespace Prisma {
      * 
      * // Emit as events
      * log: [
-     *  { emit: 'stdout', level: 'query' },
-     *  { emit: 'stdout', level: 'info' },
-     *  { emit: 'stdout', level: 'warn' }
-     *  { emit: 'stdout', level: 'error' }
+     *   { emit: 'stdout', level: 'query' },
+     *   { emit: 'stdout', level: 'info' },
+     *   { emit: 'stdout', level: 'warn' }
+     *   { emit: 'stdout', level: 'error' }
      * ]
      * ```
      * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
      */
-    log?: Array<LogLevel | LogDefinition>
-  }
-
-  export type Hooks = {
-    beforeRequest?: (options: { query: string, path: string[], rootField?: string, typeName?: string, document: any }) => any
+    log?: (LogLevel | LogDefinition)[]
+    /**
+     * The default values for transactionOptions
+     * maxWait ?= 2000
+     * timeout ?= 5000
+     */
+    transactionOptions?: {
+      maxWait?: number
+      timeout?: number
+      isolationLevel?: Prisma.TransactionIsolationLevel
+    }
   }
 
   /* Types for Logging */
@@ -846,10 +1075,13 @@ export namespace Prisma {
 
   export type PrismaAction =
     | 'findUnique'
+    | 'findUniqueOrThrow'
     | 'findMany'
     | 'findFirst'
+    | 'findFirstOrThrow'
     | 'create'
     | 'createMany'
+    | 'createManyAndReturn'
     | 'update'
     | 'updateMany'
     | 'upsert'
@@ -861,6 +1093,7 @@ export namespace Prisma {
     | 'count'
     | 'runCommandRaw'
     | 'findRaw'
+    | 'groupBy'
 
   /**
    * These options are being passed into the middleware as "params"
@@ -878,11 +1111,16 @@ export namespace Prisma {
    */
   export type Middleware<T = any> = (
     params: MiddlewareParams,
-    next: (params: MiddlewareParams) => Promise<T>,
-  ) => Promise<T>
+    next: (params: MiddlewareParams) => $Utils.JsPromise<T>,
+  ) => $Utils.JsPromise<T>
 
   // tested in getLogLevel.test.ts
   export function getLogLevel(log: Array<LogLevel | LogDefinition>): LogLevel | undefined;
+
+  /**
+   * `PrismaClient` proxy available in interactive transactions.
+   */
+  export type TransactionClient = Omit<Prisma.DefaultPrismaClient, runtime.ITXClientDenyList>
 
   export type Datasource = {
     url?: string
@@ -897,49 +1135,31 @@ export namespace Prisma {
    * Count Type ProjectCountOutputType
    */
 
-
   export type ProjectCountOutputType = {
     students: number
   }
 
-  export type ProjectCountOutputTypeSelect = {
-    students?: boolean
+  export type ProjectCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    students?: boolean | ProjectCountOutputTypeCountStudentsArgs
   }
 
-  export type ProjectCountOutputTypeGetPayload<
-    S extends boolean | null | undefined | ProjectCountOutputTypeArgs,
-    U = keyof S
-      > = S extends true
-        ? ProjectCountOutputType
-    : S extends undefined
-    ? never
-    : S extends ProjectCountOutputTypeArgs
-    ?'include' extends U
-    ? ProjectCountOutputType 
-    : 'select' extends U
-    ? {
-    [P in TrueKeys<S['select']>]:
-    P extends keyof ProjectCountOutputType ? ProjectCountOutputType[P] : never
-  } 
-    : ProjectCountOutputType
-  : ProjectCountOutputType
-
-
-
-
   // Custom InputTypes
+  /**
+   * ProjectCountOutputType without action
+   */
+  export type ProjectCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectCountOutputType
+     */
+    select?: ProjectCountOutputTypeSelect<ExtArgs> | null
+  }
 
   /**
    * ProjectCountOutputType without action
    */
-  export type ProjectCountOutputTypeArgs = {
-    /**
-     * Select specific fields to fetch from the ProjectCountOutputType
-     * 
-    **/
-    select?: ProjectCountOutputTypeSelect | null
+  export type ProjectCountOutputTypeCountStudentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StudentWhereInput
   }
-
 
 
   /**
@@ -949,7 +1169,6 @@ export namespace Prisma {
   /**
    * Model Project
    */
-
 
   export type AggregateProject = {
     _count: ProjectCountAggregateOutputType | null
@@ -1014,39 +1233,34 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type ProjectAggregateArgs = {
+  export type ProjectAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Project to aggregate.
-     * 
-    **/
+     */
     where?: ProjectWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Projects to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<ProjectOrderByWithRelationInput>
+     */
+    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
-     * 
-    **/
+     */
     cursor?: ProjectWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Projects from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Projects.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
@@ -1091,10 +1305,10 @@ export namespace Prisma {
 
 
 
-  export type ProjectGroupByArgs = {
+  export type ProjectGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ProjectWhereInput
-    orderBy?: Enumerable<ProjectOrderByWithAggregationInput>
-    by: Array<ProjectScalarFieldEnum>
+    orderBy?: ProjectOrderByWithAggregationInput | ProjectOrderByWithAggregationInput[]
+    by: ProjectScalarFieldEnum[] | ProjectScalarFieldEnum
     having?: ProjectScalarWhereWithAggregatesInput
     take?: number
     skip?: number
@@ -1104,7 +1318,6 @@ export namespace Prisma {
     _min?: ProjectMinAggregateInputType
     _max?: ProjectMaxAggregateInputType
   }
-
 
   export type ProjectGroupByOutputType = {
     id: bigint
@@ -1117,9 +1330,9 @@ export namespace Prisma {
     _max: ProjectMaxAggregateOutputType | null
   }
 
-  type GetProjectGroupByPayload<T extends ProjectGroupByArgs> = PrismaPromise<
+  type GetProjectGroupByPayload<T extends ProjectGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickArray<ProjectGroupByOutputType, T['by']> &
+      PickEnumerable<ProjectGroupByOutputType, T['by']> &
         {
           [P in ((keyof T) & (keyof ProjectGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
@@ -1131,54 +1344,53 @@ export namespace Prisma {
     >
 
 
-  export type ProjectSelect = {
+  export type ProjectSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
     description?: boolean
-    mentor?: boolean | MentorArgs
-    students?: boolean | StudentFindManyArgs
-    _count?: boolean | ProjectCountOutputTypeArgs
+    mentor?: boolean | Project$mentorArgs<ExtArgs>
+    students?: boolean | Project$studentsArgs<ExtArgs>
+    _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["project"]>
+
+  export type ProjectSelectScalar = {
+    id?: boolean
+    name?: boolean
+    description?: boolean
   }
 
-  export type ProjectInclude = {
-    mentor?: boolean | MentorArgs
-    students?: boolean | StudentFindManyArgs
-    _count?: boolean | ProjectCountOutputTypeArgs
+
+  export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    mentor?: boolean | Project$mentorArgs<ExtArgs>
+    students?: boolean | Project$studentsArgs<ExtArgs>
+    _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }
 
-  export type ProjectGetPayload<
-    S extends boolean | null | undefined | ProjectArgs,
-    U = keyof S
-      > = S extends true
-        ? Project
-    : S extends undefined
-    ? never
-    : S extends ProjectArgs | ProjectFindManyArgs
-    ?'include' extends U
-    ? Project  & {
-    [P in TrueKeys<S['include']>]:
-        P extends 'mentor' ? MentorGetPayload<Exclude<S['include'], undefined | null>[P]> | null :
-        P extends 'students' ? Array < StudentGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
-        P extends '_count' ? ProjectCountOutputTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
-  } 
-    : 'select' extends U
-    ? {
-    [P in TrueKeys<S['select']>]:
-        P extends 'mentor' ? MentorGetPayload<Exclude<S['select'], undefined | null>[P]> | null :
-        P extends 'students' ? Array < StudentGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
-        P extends '_count' ? ProjectCountOutputTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof Project ? Project[P] : never
-  } 
-    : Project
-  : Project
+
+  export type $ProjectPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Project"
+    objects: {
+      mentor: Prisma.$MentorPayload<ExtArgs> | null
+      students: Prisma.$StudentPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      name: string
+      description: string
+    }, ExtArgs["result"]["project"]>
+    composites: {}
+  }
 
 
-  type ProjectCountArgs = Merge<
-    Omit<ProjectFindManyArgs, 'select' | 'include'> & {
+  type ProjectGetPayload<S extends boolean | null | undefined | ProjectDefaultArgs> = $Result.GetResult<Prisma.$ProjectPayload, S>
+
+  type ProjectCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ProjectFindManyArgs, 'select' | 'include' | 'distinct'> & {
       select?: ProjectCountAggregateInputType | true
     }
-  >
 
-  export interface ProjectDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+  export interface ProjectDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Project'], meta: { name: 'Project' } }
     /**
      * Find zero or one Project that matches the filter.
      * @param {ProjectFindUniqueArgs} args - Arguments to find a Project
@@ -1190,9 +1402,25 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends ProjectFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, ProjectFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Project'> extends True ? CheckSelect<T, Prisma__ProjectClient<Project>, Prisma__ProjectClient<ProjectGetPayload<T>>> : CheckSelect<T, Prisma__ProjectClient<Project | null, null>, Prisma__ProjectClient<ProjectGetPayload<T> | null, null>>
+    findUnique<T extends ProjectFindUniqueArgs<ExtArgs>>(
+      args: SelectSubset<T, ProjectFindUniqueArgs<ExtArgs>>
+    ): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+
+    /**
+     * Find one Project that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {ProjectFindUniqueOrThrowArgs} args - Arguments to find a Project
+     * @example
+     * // Get one Project
+     * const project = await prisma.project.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends ProjectFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, ProjectFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
 
     /**
      * Find the first Project that matches the filter.
@@ -1207,15 +1435,33 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends ProjectFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, ProjectFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Project'> extends True ? CheckSelect<T, Prisma__ProjectClient<Project>, Prisma__ProjectClient<ProjectGetPayload<T>>> : CheckSelect<T, Prisma__ProjectClient<Project | null, null>, Prisma__ProjectClient<ProjectGetPayload<T> | null, null>>
+    findFirst<T extends ProjectFindFirstArgs<ExtArgs>>(
+      args?: SelectSubset<T, ProjectFindFirstArgs<ExtArgs>>
+    ): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+
+    /**
+     * Find the first Project that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectFindFirstOrThrowArgs} args - Arguments to find a Project
+     * @example
+     * // Get one Project
+     * const project = await prisma.project.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends ProjectFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, ProjectFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
 
     /**
      * Find zero or more Projects that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ProjectFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @param {ProjectFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
      * // Get all Projects
      * const projects = await prisma.project.findMany()
@@ -1227,9 +1473,9 @@ export namespace Prisma {
      * const projectWithIdOnly = await prisma.project.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends ProjectFindManyArgs>(
-      args?: SelectSubset<T, ProjectFindManyArgs>
-    ): CheckSelect<T, PrismaPromise<Array<Project>>, PrismaPromise<Array<ProjectGetPayload<T>>>>
+    findMany<T extends ProjectFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, ProjectFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, 'findMany'>>
 
     /**
      * Create a Project.
@@ -1243,25 +1489,51 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends ProjectCreateArgs>(
-      args: SelectSubset<T, ProjectCreateArgs>
-    ): CheckSelect<T, Prisma__ProjectClient<Project>, Prisma__ProjectClient<ProjectGetPayload<T>>>
+    create<T extends ProjectCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, ProjectCreateArgs<ExtArgs>>
+    ): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
 
     /**
      * Create many Projects.
-     *     @param {ProjectCreateManyArgs} args - Arguments to create many Projects.
-     *     @example
-     *     // Create many Projects
-     *     const project = await prisma.project.createMany({
-     *       data: {
-     *         // ... provide data here
-     *       }
-     *     })
+     * @param {ProjectCreateManyArgs} args - Arguments to create many Projects.
+     * @example
+     * // Create many Projects
+     * const project = await prisma.project.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
      *     
     **/
-    createMany<T extends ProjectCreateManyArgs>(
-      args?: SelectSubset<T, ProjectCreateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    createMany<T extends ProjectCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, ProjectCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Projects and returns the data saved in the database.
+     * @param {ProjectCreateManyAndReturnArgs} args - Arguments to create many Projects.
+     * @example
+     * // Create many Projects
+     * const project = await prisma.project.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Projects and only return the `id`
+     * const projectWithIdOnly = await prisma.project.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+    **/
+    createManyAndReturn<T extends ProjectCreateManyAndReturnArgs<ExtArgs>>(
+      args?: SelectSubset<T, ProjectCreateManyAndReturnArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, 'createManyAndReturn'>>
 
     /**
      * Delete a Project.
@@ -1275,9 +1547,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends ProjectDeleteArgs>(
-      args: SelectSubset<T, ProjectDeleteArgs>
-    ): CheckSelect<T, Prisma__ProjectClient<Project>, Prisma__ProjectClient<ProjectGetPayload<T>>>
+    delete<T extends ProjectDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, ProjectDeleteArgs<ExtArgs>>
+    ): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
 
     /**
      * Update one Project.
@@ -1294,9 +1566,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends ProjectUpdateArgs>(
-      args: SelectSubset<T, ProjectUpdateArgs>
-    ): CheckSelect<T, Prisma__ProjectClient<Project>, Prisma__ProjectClient<ProjectGetPayload<T>>>
+    update<T extends ProjectUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, ProjectUpdateArgs<ExtArgs>>
+    ): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
 
     /**
      * Delete zero or more Projects.
@@ -1310,9 +1582,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends ProjectDeleteManyArgs>(
-      args?: SelectSubset<T, ProjectDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends ProjectDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, ProjectDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more Projects.
@@ -1331,9 +1603,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends ProjectUpdateManyArgs>(
-      args: SelectSubset<T, ProjectUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends ProjectUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, ProjectUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one Project.
@@ -1352,43 +1624,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends ProjectUpsertArgs>(
-      args: SelectSubset<T, ProjectUpsertArgs>
-    ): CheckSelect<T, Prisma__ProjectClient<Project>, Prisma__ProjectClient<ProjectGetPayload<T>>>
-
-    /**
-     * Find one Project that matches the filter or throw
-     * `NotFoundError` if no matches were found.
-     * @param {ProjectFindUniqueOrThrowArgs} args - Arguments to find a Project
-     * @example
-     * // Get one Project
-     * const project = await prisma.project.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUniqueOrThrow<T extends ProjectFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, ProjectFindUniqueOrThrowArgs>
-    ): CheckSelect<T, Prisma__ProjectClient<Project>, Prisma__ProjectClient<ProjectGetPayload<T>>>
-
-    /**
-     * Find the first Project that matches the filter or
-     * throw `NotFoundError` if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ProjectFindFirstOrThrowArgs} args - Arguments to find a Project
-     * @example
-     * // Get one Project
-     * const project = await prisma.project.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirstOrThrow<T extends ProjectFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, ProjectFindFirstOrThrowArgs>
-    ): CheckSelect<T, Prisma__ProjectClient<Project>, Prisma__ProjectClient<ProjectGetPayload<T>>>
+    upsert<T extends ProjectUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, ProjectUpsertArgs<ExtArgs>>
+    ): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
 
     /**
      * Count the number of Projects.
@@ -1405,8 +1643,8 @@ export namespace Prisma {
     **/
     count<T extends ProjectCountArgs>(
       args?: Subset<T, ProjectCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], ProjectCountAggregateOutputType>
@@ -1437,7 +1675,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends ProjectAggregateArgs>(args: Subset<T, ProjectAggregateArgs>): PrismaPromise<GetProjectAggregateType<T>>
+    aggregate<T extends ProjectAggregateArgs>(args: Subset<T, ProjectAggregateArgs>): Prisma.PrismaPromise<GetProjectAggregateType<T>>
 
     /**
      * Group by Project.
@@ -1467,7 +1705,7 @@ export namespace Prisma {
         ? { orderBy: ProjectGroupByArgs['orderBy'] }
         : { orderBy?: ProjectGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends TupleToUnion<T['by']>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
       HavingFields extends GetHavingFields<T['having']>,
       HavingValid extends Has<ByFields, HavingFields>,
@@ -1514,8 +1752,11 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, ProjectGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProjectGroupByPayload<T> : PrismaPromise<InputErrors>
-
+    >(args: SubsetIntersection<T, ProjectGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProjectGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Project model
+   */
+  readonly fields: ProjectFieldRefs;
   }
 
   /**
@@ -1524,385 +1765,414 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__ProjectClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
-    private readonly _dmmf;
-    private readonly _fetcher;
-    private readonly _queryType;
-    private readonly _rootField;
-    private readonly _clientMethod;
-    private readonly _args;
-    private readonly _dataPath;
-    private readonly _errorFormat;
-    private readonly _measurePerformance?;
-    private _isList;
-    private _callsite;
-    private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+  export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
 
-    mentor<T extends MentorArgs = {}>(args?: Subset<T, MentorArgs>): CheckSelect<T, Prisma__MentorClient<Mentor | Null>, Prisma__MentorClient<MentorGetPayload<T> | Null>>;
+    mentor<T extends Project$mentorArgs<ExtArgs> = {}>(args?: Subset<T, Project$mentorArgs<ExtArgs>>): Prisma__MentorClient<$Result.GetResult<Prisma.$MentorPayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
 
-    students<T extends StudentFindManyArgs = {}>(args?: Subset<T, StudentFindManyArgs>): CheckSelect<T, PrismaPromise<Array<Student>| Null>, PrismaPromise<Array<StudentGetPayload<T>>| Null>>;
+    students<T extends Project$studentsArgs<ExtArgs> = {}>(args?: Subset<T, Project$studentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, 'findMany'> | Null>;
 
-    private get _document();
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>;
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>;
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
   }
 
 
 
-  // Custom InputTypes
-
   /**
-   * Project base type for findUnique actions
+   * Fields of the Project model
+   */ 
+  interface ProjectFieldRefs {
+    readonly id: FieldRef<"Project", 'BigInt'>
+    readonly name: FieldRef<"Project", 'String'>
+    readonly description: FieldRef<"Project", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Project findUnique
    */
-  export type ProjectFindUniqueArgsBase = {
+  export type ProjectFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Project
-     * 
-    **/
-    select?: ProjectSelect | null
+     */
+    select?: ProjectSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: ProjectInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
     /**
      * Filter, which Project to fetch.
-     * 
-    **/
+     */
     where: ProjectWhereUniqueInput
   }
 
   /**
-   * Project: findUnique
+   * Project findUniqueOrThrow
    */
-  export interface ProjectFindUniqueArgs extends ProjectFindUniqueArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
-
-  /**
-   * Project base type for findFirst actions
-   */
-  export type ProjectFindFirstArgsBase = {
+  export type ProjectFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Project
-     * 
-    **/
-    select?: ProjectSelect | null
+     */
+    select?: ProjectSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: ProjectInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
     /**
      * Filter, which Project to fetch.
-     * 
-    **/
+     */
+    where: ProjectWhereUniqueInput
+  }
+
+  /**
+   * Project findFirst
+   */
+  export type ProjectFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    /**
+     * Filter, which Project to fetch.
+     */
     where?: ProjectWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Projects to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<ProjectOrderByWithRelationInput>
+     */
+    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Projects.
-     * 
-    **/
+     */
     cursor?: ProjectWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Projects from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Projects.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Projects.
-     * 
-    **/
-    distinct?: Enumerable<ProjectScalarFieldEnum>
+     */
+    distinct?: ProjectScalarFieldEnum | ProjectScalarFieldEnum[]
   }
 
   /**
-   * Project: findFirst
+   * Project findFirstOrThrow
    */
-  export interface ProjectFindFirstArgs extends ProjectFindFirstArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
-
-  /**
-   * Project findMany
-   */
-  export type ProjectFindManyArgs = {
+  export type ProjectFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Project
-     * 
-    **/
-    select?: ProjectSelect | null
+     */
+    select?: ProjectSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: ProjectInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
     /**
-     * Filter, which Projects to fetch.
-     * 
-    **/
+     * Filter, which Project to fetch.
+     */
     where?: ProjectWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Projects to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<ProjectOrderByWithRelationInput>
+     */
+    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing Projects.
-     * 
-    **/
+     * Sets the position for searching for Projects.
+     */
     cursor?: ProjectWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Projects from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Projects.
-     * 
-    **/
+     */
     skip?: number
-    distinct?: Enumerable<ProjectScalarFieldEnum>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Projects.
+     */
+    distinct?: ProjectScalarFieldEnum | ProjectScalarFieldEnum[]
   }
 
+  /**
+   * Project findMany
+   */
+  export type ProjectFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    /**
+     * Filter, which Projects to fetch.
+     */
+    where?: ProjectWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Projects to fetch.
+     */
+    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Projects.
+     */
+    cursor?: ProjectWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Projects from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Projects.
+     */
+    skip?: number
+    distinct?: ProjectScalarFieldEnum | ProjectScalarFieldEnum[]
+  }
 
   /**
    * Project create
    */
-  export type ProjectCreateArgs = {
+  export type ProjectCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Project
-     * 
-    **/
-    select?: ProjectSelect | null
+     */
+    select?: ProjectSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: ProjectInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
     /**
      * The data needed to create a Project.
-     * 
-    **/
+     */
     data: XOR<ProjectCreateInput, ProjectUncheckedCreateInput>
   }
-
 
   /**
    * Project createMany
    */
-  export type ProjectCreateManyArgs = {
+  export type ProjectCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The data used to create many Projects.
-     * 
-    **/
-    data: Enumerable<ProjectCreateManyInput>
+     */
+    data: ProjectCreateManyInput | ProjectCreateManyInput[]
     skipDuplicates?: boolean
   }
 
+  /**
+   * Project createManyAndReturn
+   */
+  export type ProjectCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    /**
+     * The data used to create many Projects.
+     */
+    data: ProjectCreateManyInput | ProjectCreateManyInput[]
+    skipDuplicates?: boolean
+  }
 
   /**
    * Project update
    */
-  export type ProjectUpdateArgs = {
+  export type ProjectUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Project
-     * 
-    **/
-    select?: ProjectSelect | null
+     */
+    select?: ProjectSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: ProjectInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
     /**
      * The data needed to update a Project.
-     * 
-    **/
+     */
     data: XOR<ProjectUpdateInput, ProjectUncheckedUpdateInput>
     /**
      * Choose, which Project to update.
-     * 
-    **/
+     */
     where: ProjectWhereUniqueInput
   }
-
 
   /**
    * Project updateMany
    */
-  export type ProjectUpdateManyArgs = {
+  export type ProjectUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The data used to update Projects.
-     * 
-    **/
+     */
     data: XOR<ProjectUpdateManyMutationInput, ProjectUncheckedUpdateManyInput>
     /**
      * Filter which Projects to update
-     * 
-    **/
+     */
     where?: ProjectWhereInput
   }
-
 
   /**
    * Project upsert
    */
-  export type ProjectUpsertArgs = {
+  export type ProjectUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Project
-     * 
-    **/
-    select?: ProjectSelect | null
+     */
+    select?: ProjectSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: ProjectInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
     /**
      * The filter to search for the Project to update in case it exists.
-     * 
-    **/
+     */
     where: ProjectWhereUniqueInput
     /**
      * In case the Project found by the `where` argument doesn't exist, create a new Project with this data.
-     * 
-    **/
+     */
     create: XOR<ProjectCreateInput, ProjectUncheckedCreateInput>
     /**
      * In case the Project was found with the provided `where` argument, update it with this data.
-     * 
-    **/
+     */
     update: XOR<ProjectUpdateInput, ProjectUncheckedUpdateInput>
   }
-
 
   /**
    * Project delete
    */
-  export type ProjectDeleteArgs = {
+  export type ProjectDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Project
-     * 
-    **/
-    select?: ProjectSelect | null
+     */
+    select?: ProjectSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: ProjectInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
     /**
      * Filter which Project to delete.
-     * 
-    **/
+     */
     where: ProjectWhereUniqueInput
   }
-
 
   /**
    * Project deleteMany
    */
-  export type ProjectDeleteManyArgs = {
+  export type ProjectDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Projects to delete
-     * 
-    **/
+     */
     where?: ProjectWhereInput
   }
 
+  /**
+   * Project.mentor
+   */
+  export type Project$mentorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Mentor
+     */
+    select?: MentorSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MentorInclude<ExtArgs> | null
+    where?: MentorWhereInput
+  }
 
   /**
-   * Project: findUniqueOrThrow
+   * Project.students
    */
-  export type ProjectFindUniqueOrThrowArgs = ProjectFindUniqueArgsBase
-      
-
-  /**
-   * Project: findFirstOrThrow
-   */
-  export type ProjectFindFirstOrThrowArgs = ProjectFindFirstArgsBase
-      
+  export type Project$studentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Student
+     */
+    select?: StudentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentInclude<ExtArgs> | null
+    where?: StudentWhereInput
+    orderBy?: StudentOrderByWithRelationInput | StudentOrderByWithRelationInput[]
+    cursor?: StudentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StudentScalarFieldEnum | StudentScalarFieldEnum[]
+  }
 
   /**
    * Project without action
    */
-  export type ProjectArgs = {
+  export type ProjectDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Project
-     * 
-    **/
-    select?: ProjectSelect | null
+     */
+    select?: ProjectSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: ProjectInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
   }
-
 
 
   /**
    * Model Student
    */
-
 
   export type AggregateStudent = {
     _count: StudentCountAggregateOutputType | null
@@ -2029,39 +2299,34 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type StudentAggregateArgs = {
+  export type StudentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Student to aggregate.
-     * 
-    **/
+     */
     where?: StudentWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Students to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<StudentOrderByWithRelationInput>
+     */
+    orderBy?: StudentOrderByWithRelationInput | StudentOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
-     * 
-    **/
+     */
     cursor?: StudentWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Students from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Students.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
@@ -2106,10 +2371,10 @@ export namespace Prisma {
 
 
 
-  export type StudentGroupByArgs = {
+  export type StudentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StudentWhereInput
-    orderBy?: Enumerable<StudentOrderByWithAggregationInput>
-    by: Array<StudentScalarFieldEnum>
+    orderBy?: StudentOrderByWithAggregationInput | StudentOrderByWithAggregationInput[]
+    by: StudentScalarFieldEnum[] | StudentScalarFieldEnum
     having?: StudentScalarWhereWithAggregatesInput
     take?: number
     skip?: number
@@ -2119,7 +2384,6 @@ export namespace Prisma {
     _min?: StudentMinAggregateInputType
     _max?: StudentMaxAggregateInputType
   }
-
 
   export type StudentGroupByOutputType = {
     id: bigint
@@ -2139,9 +2403,9 @@ export namespace Prisma {
     _max: StudentMaxAggregateOutputType | null
   }
 
-  type GetStudentGroupByPayload<T extends StudentGroupByArgs> = PrismaPromise<
+  type GetStudentGroupByPayload<T extends StudentGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickArray<StudentGroupByOutputType, T['by']> &
+      PickEnumerable<StudentGroupByOutputType, T['by']> &
         {
           [P in ((keyof T) & (keyof StudentGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
@@ -2153,7 +2417,7 @@ export namespace Prisma {
     >
 
 
-  export type StudentSelect = {
+  export type StudentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
     group?: boolean
@@ -2164,42 +2428,58 @@ export namespace Prisma {
     tgUserId?: boolean
     tgUsername?: boolean
     projectId?: boolean
-    project?: boolean | ProjectArgs
+    project?: boolean | Student$projectArgs<ExtArgs>
+  }, ExtArgs["result"]["student"]>
+
+  export type StudentSelectScalar = {
+    id?: boolean
+    name?: boolean
+    group?: boolean
+    isApproved?: boolean
+    stars?: boolean
+    hearts?: boolean
+    tgChatId?: boolean
+    tgUserId?: boolean
+    tgUsername?: boolean
+    projectId?: boolean
   }
 
-  export type StudentInclude = {
-    project?: boolean | ProjectArgs
+
+  export type StudentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | Student$projectArgs<ExtArgs>
   }
 
-  export type StudentGetPayload<
-    S extends boolean | null | undefined | StudentArgs,
-    U = keyof S
-      > = S extends true
-        ? Student
-    : S extends undefined
-    ? never
-    : S extends StudentArgs | StudentFindManyArgs
-    ?'include' extends U
-    ? Student  & {
-    [P in TrueKeys<S['include']>]:
-        P extends 'project' ? ProjectGetPayload<Exclude<S['include'], undefined | null>[P]> | null :  never
-  } 
-    : 'select' extends U
-    ? {
-    [P in TrueKeys<S['select']>]:
-        P extends 'project' ? ProjectGetPayload<Exclude<S['select'], undefined | null>[P]> | null :  P extends keyof Student ? Student[P] : never
-  } 
-    : Student
-  : Student
+
+  export type $StudentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Student"
+    objects: {
+      project: Prisma.$ProjectPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      name: string
+      group: string
+      isApproved: boolean
+      stars: number
+      hearts: number
+      tgChatId: bigint
+      tgUserId: bigint
+      tgUsername: string | null
+      projectId: bigint | null
+    }, ExtArgs["result"]["student"]>
+    composites: {}
+  }
 
 
-  type StudentCountArgs = Merge<
-    Omit<StudentFindManyArgs, 'select' | 'include'> & {
+  type StudentGetPayload<S extends boolean | null | undefined | StudentDefaultArgs> = $Result.GetResult<Prisma.$StudentPayload, S>
+
+  type StudentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<StudentFindManyArgs, 'select' | 'include' | 'distinct'> & {
       select?: StudentCountAggregateInputType | true
     }
-  >
 
-  export interface StudentDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+  export interface StudentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Student'], meta: { name: 'Student' } }
     /**
      * Find zero or one Student that matches the filter.
      * @param {StudentFindUniqueArgs} args - Arguments to find a Student
@@ -2211,9 +2491,25 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends StudentFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, StudentFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Student'> extends True ? CheckSelect<T, Prisma__StudentClient<Student>, Prisma__StudentClient<StudentGetPayload<T>>> : CheckSelect<T, Prisma__StudentClient<Student | null, null>, Prisma__StudentClient<StudentGetPayload<T> | null, null>>
+    findUnique<T extends StudentFindUniqueArgs<ExtArgs>>(
+      args: SelectSubset<T, StudentFindUniqueArgs<ExtArgs>>
+    ): Prisma__StudentClient<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+
+    /**
+     * Find one Student that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {StudentFindUniqueOrThrowArgs} args - Arguments to find a Student
+     * @example
+     * // Get one Student
+     * const student = await prisma.student.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends StudentFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, StudentFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__StudentClient<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
 
     /**
      * Find the first Student that matches the filter.
@@ -2228,15 +2524,33 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends StudentFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, StudentFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Student'> extends True ? CheckSelect<T, Prisma__StudentClient<Student>, Prisma__StudentClient<StudentGetPayload<T>>> : CheckSelect<T, Prisma__StudentClient<Student | null, null>, Prisma__StudentClient<StudentGetPayload<T> | null, null>>
+    findFirst<T extends StudentFindFirstArgs<ExtArgs>>(
+      args?: SelectSubset<T, StudentFindFirstArgs<ExtArgs>>
+    ): Prisma__StudentClient<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+
+    /**
+     * Find the first Student that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StudentFindFirstOrThrowArgs} args - Arguments to find a Student
+     * @example
+     * // Get one Student
+     * const student = await prisma.student.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends StudentFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, StudentFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__StudentClient<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
 
     /**
      * Find zero or more Students that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {StudentFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @param {StudentFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
      * // Get all Students
      * const students = await prisma.student.findMany()
@@ -2248,9 +2562,9 @@ export namespace Prisma {
      * const studentWithIdOnly = await prisma.student.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends StudentFindManyArgs>(
-      args?: SelectSubset<T, StudentFindManyArgs>
-    ): CheckSelect<T, PrismaPromise<Array<Student>>, PrismaPromise<Array<StudentGetPayload<T>>>>
+    findMany<T extends StudentFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, StudentFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, 'findMany'>>
 
     /**
      * Create a Student.
@@ -2264,25 +2578,51 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends StudentCreateArgs>(
-      args: SelectSubset<T, StudentCreateArgs>
-    ): CheckSelect<T, Prisma__StudentClient<Student>, Prisma__StudentClient<StudentGetPayload<T>>>
+    create<T extends StudentCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, StudentCreateArgs<ExtArgs>>
+    ): Prisma__StudentClient<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
 
     /**
      * Create many Students.
-     *     @param {StudentCreateManyArgs} args - Arguments to create many Students.
-     *     @example
-     *     // Create many Students
-     *     const student = await prisma.student.createMany({
-     *       data: {
-     *         // ... provide data here
-     *       }
-     *     })
+     * @param {StudentCreateManyArgs} args - Arguments to create many Students.
+     * @example
+     * // Create many Students
+     * const student = await prisma.student.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
      *     
     **/
-    createMany<T extends StudentCreateManyArgs>(
-      args?: SelectSubset<T, StudentCreateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    createMany<T extends StudentCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, StudentCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Students and returns the data saved in the database.
+     * @param {StudentCreateManyAndReturnArgs} args - Arguments to create many Students.
+     * @example
+     * // Create many Students
+     * const student = await prisma.student.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Students and only return the `id`
+     * const studentWithIdOnly = await prisma.student.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+    **/
+    createManyAndReturn<T extends StudentCreateManyAndReturnArgs<ExtArgs>>(
+      args?: SelectSubset<T, StudentCreateManyAndReturnArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, 'createManyAndReturn'>>
 
     /**
      * Delete a Student.
@@ -2296,9 +2636,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends StudentDeleteArgs>(
-      args: SelectSubset<T, StudentDeleteArgs>
-    ): CheckSelect<T, Prisma__StudentClient<Student>, Prisma__StudentClient<StudentGetPayload<T>>>
+    delete<T extends StudentDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, StudentDeleteArgs<ExtArgs>>
+    ): Prisma__StudentClient<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
 
     /**
      * Update one Student.
@@ -2315,9 +2655,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends StudentUpdateArgs>(
-      args: SelectSubset<T, StudentUpdateArgs>
-    ): CheckSelect<T, Prisma__StudentClient<Student>, Prisma__StudentClient<StudentGetPayload<T>>>
+    update<T extends StudentUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, StudentUpdateArgs<ExtArgs>>
+    ): Prisma__StudentClient<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
 
     /**
      * Delete zero or more Students.
@@ -2331,9 +2671,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends StudentDeleteManyArgs>(
-      args?: SelectSubset<T, StudentDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends StudentDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, StudentDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more Students.
@@ -2352,9 +2692,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends StudentUpdateManyArgs>(
-      args: SelectSubset<T, StudentUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends StudentUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, StudentUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one Student.
@@ -2373,43 +2713,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends StudentUpsertArgs>(
-      args: SelectSubset<T, StudentUpsertArgs>
-    ): CheckSelect<T, Prisma__StudentClient<Student>, Prisma__StudentClient<StudentGetPayload<T>>>
-
-    /**
-     * Find one Student that matches the filter or throw
-     * `NotFoundError` if no matches were found.
-     * @param {StudentFindUniqueOrThrowArgs} args - Arguments to find a Student
-     * @example
-     * // Get one Student
-     * const student = await prisma.student.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUniqueOrThrow<T extends StudentFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, StudentFindUniqueOrThrowArgs>
-    ): CheckSelect<T, Prisma__StudentClient<Student>, Prisma__StudentClient<StudentGetPayload<T>>>
-
-    /**
-     * Find the first Student that matches the filter or
-     * throw `NotFoundError` if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {StudentFindFirstOrThrowArgs} args - Arguments to find a Student
-     * @example
-     * // Get one Student
-     * const student = await prisma.student.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirstOrThrow<T extends StudentFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, StudentFindFirstOrThrowArgs>
-    ): CheckSelect<T, Prisma__StudentClient<Student>, Prisma__StudentClient<StudentGetPayload<T>>>
+    upsert<T extends StudentUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, StudentUpsertArgs<ExtArgs>>
+    ): Prisma__StudentClient<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
 
     /**
      * Count the number of Students.
@@ -2426,8 +2732,8 @@ export namespace Prisma {
     **/
     count<T extends StudentCountArgs>(
       args?: Subset<T, StudentCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], StudentCountAggregateOutputType>
@@ -2458,7 +2764,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends StudentAggregateArgs>(args: Subset<T, StudentAggregateArgs>): PrismaPromise<GetStudentAggregateType<T>>
+    aggregate<T extends StudentAggregateArgs>(args: Subset<T, StudentAggregateArgs>): Prisma.PrismaPromise<GetStudentAggregateType<T>>
 
     /**
      * Group by Student.
@@ -2488,7 +2794,7 @@ export namespace Prisma {
         ? { orderBy: StudentGroupByArgs['orderBy'] }
         : { orderBy?: StudentGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends TupleToUnion<T['by']>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
       HavingFields extends GetHavingFields<T['having']>,
       HavingValid extends Has<ByFields, HavingFields>,
@@ -2535,8 +2841,11 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, StudentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStudentGroupByPayload<T> : PrismaPromise<InputErrors>
-
+    >(args: SubsetIntersection<T, StudentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStudentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Student model
+   */
+  readonly fields: StudentFieldRefs;
   }
 
   /**
@@ -2545,383 +2854,399 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__StudentClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
-    private readonly _dmmf;
-    private readonly _fetcher;
-    private readonly _queryType;
-    private readonly _rootField;
-    private readonly _clientMethod;
-    private readonly _args;
-    private readonly _dataPath;
-    private readonly _errorFormat;
-    private readonly _measurePerformance?;
-    private _isList;
-    private _callsite;
-    private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+  export interface Prisma__StudentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
 
-    project<T extends ProjectArgs = {}>(args?: Subset<T, ProjectArgs>): CheckSelect<T, Prisma__ProjectClient<Project | Null>, Prisma__ProjectClient<ProjectGetPayload<T> | Null>>;
+    project<T extends Student$projectArgs<ExtArgs> = {}>(args?: Subset<T, Student$projectArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
 
-    private get _document();
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>;
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>;
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
   }
 
 
 
-  // Custom InputTypes
-
   /**
-   * Student base type for findUnique actions
+   * Fields of the Student model
+   */ 
+  interface StudentFieldRefs {
+    readonly id: FieldRef<"Student", 'BigInt'>
+    readonly name: FieldRef<"Student", 'String'>
+    readonly group: FieldRef<"Student", 'String'>
+    readonly isApproved: FieldRef<"Student", 'Boolean'>
+    readonly stars: FieldRef<"Student", 'Int'>
+    readonly hearts: FieldRef<"Student", 'Int'>
+    readonly tgChatId: FieldRef<"Student", 'BigInt'>
+    readonly tgUserId: FieldRef<"Student", 'BigInt'>
+    readonly tgUsername: FieldRef<"Student", 'String'>
+    readonly projectId: FieldRef<"Student", 'BigInt'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Student findUnique
    */
-  export type StudentFindUniqueArgsBase = {
+  export type StudentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Student
-     * 
-    **/
-    select?: StudentSelect | null
+     */
+    select?: StudentSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: StudentInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentInclude<ExtArgs> | null
     /**
      * Filter, which Student to fetch.
-     * 
-    **/
+     */
     where: StudentWhereUniqueInput
   }
 
   /**
-   * Student: findUnique
+   * Student findUniqueOrThrow
    */
-  export interface StudentFindUniqueArgs extends StudentFindUniqueArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
-
-  /**
-   * Student base type for findFirst actions
-   */
-  export type StudentFindFirstArgsBase = {
+  export type StudentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Student
-     * 
-    **/
-    select?: StudentSelect | null
+     */
+    select?: StudentSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: StudentInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentInclude<ExtArgs> | null
     /**
      * Filter, which Student to fetch.
-     * 
-    **/
+     */
+    where: StudentWhereUniqueInput
+  }
+
+  /**
+   * Student findFirst
+   */
+  export type StudentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Student
+     */
+    select?: StudentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentInclude<ExtArgs> | null
+    /**
+     * Filter, which Student to fetch.
+     */
     where?: StudentWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Students to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<StudentOrderByWithRelationInput>
+     */
+    orderBy?: StudentOrderByWithRelationInput | StudentOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Students.
-     * 
-    **/
+     */
     cursor?: StudentWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Students from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Students.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Students.
-     * 
-    **/
-    distinct?: Enumerable<StudentScalarFieldEnum>
+     */
+    distinct?: StudentScalarFieldEnum | StudentScalarFieldEnum[]
   }
 
   /**
-   * Student: findFirst
+   * Student findFirstOrThrow
    */
-  export interface StudentFindFirstArgs extends StudentFindFirstArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
-
-  /**
-   * Student findMany
-   */
-  export type StudentFindManyArgs = {
+  export type StudentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Student
-     * 
-    **/
-    select?: StudentSelect | null
+     */
+    select?: StudentSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: StudentInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentInclude<ExtArgs> | null
     /**
-     * Filter, which Students to fetch.
-     * 
-    **/
+     * Filter, which Student to fetch.
+     */
     where?: StudentWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Students to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<StudentOrderByWithRelationInput>
+     */
+    orderBy?: StudentOrderByWithRelationInput | StudentOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing Students.
-     * 
-    **/
+     * Sets the position for searching for Students.
+     */
     cursor?: StudentWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Students from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Students.
-     * 
-    **/
+     */
     skip?: number
-    distinct?: Enumerable<StudentScalarFieldEnum>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Students.
+     */
+    distinct?: StudentScalarFieldEnum | StudentScalarFieldEnum[]
   }
 
+  /**
+   * Student findMany
+   */
+  export type StudentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Student
+     */
+    select?: StudentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentInclude<ExtArgs> | null
+    /**
+     * Filter, which Students to fetch.
+     */
+    where?: StudentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Students to fetch.
+     */
+    orderBy?: StudentOrderByWithRelationInput | StudentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Students.
+     */
+    cursor?: StudentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Students from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Students.
+     */
+    skip?: number
+    distinct?: StudentScalarFieldEnum | StudentScalarFieldEnum[]
+  }
 
   /**
    * Student create
    */
-  export type StudentCreateArgs = {
+  export type StudentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Student
-     * 
-    **/
-    select?: StudentSelect | null
+     */
+    select?: StudentSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: StudentInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentInclude<ExtArgs> | null
     /**
      * The data needed to create a Student.
-     * 
-    **/
+     */
     data: XOR<StudentCreateInput, StudentUncheckedCreateInput>
   }
-
 
   /**
    * Student createMany
    */
-  export type StudentCreateManyArgs = {
+  export type StudentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The data used to create many Students.
-     * 
-    **/
-    data: Enumerable<StudentCreateManyInput>
+     */
+    data: StudentCreateManyInput | StudentCreateManyInput[]
     skipDuplicates?: boolean
   }
 
+  /**
+   * Student createManyAndReturn
+   */
+  export type StudentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Student
+     */
+    select?: StudentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentInclude<ExtArgs> | null
+    /**
+     * The data used to create many Students.
+     */
+    data: StudentCreateManyInput | StudentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
 
   /**
    * Student update
    */
-  export type StudentUpdateArgs = {
+  export type StudentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Student
-     * 
-    **/
-    select?: StudentSelect | null
+     */
+    select?: StudentSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: StudentInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentInclude<ExtArgs> | null
     /**
      * The data needed to update a Student.
-     * 
-    **/
+     */
     data: XOR<StudentUpdateInput, StudentUncheckedUpdateInput>
     /**
      * Choose, which Student to update.
-     * 
-    **/
+     */
     where: StudentWhereUniqueInput
   }
-
 
   /**
    * Student updateMany
    */
-  export type StudentUpdateManyArgs = {
+  export type StudentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The data used to update Students.
-     * 
-    **/
+     */
     data: XOR<StudentUpdateManyMutationInput, StudentUncheckedUpdateManyInput>
     /**
      * Filter which Students to update
-     * 
-    **/
+     */
     where?: StudentWhereInput
   }
-
 
   /**
    * Student upsert
    */
-  export type StudentUpsertArgs = {
+  export type StudentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Student
-     * 
-    **/
-    select?: StudentSelect | null
+     */
+    select?: StudentSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: StudentInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentInclude<ExtArgs> | null
     /**
      * The filter to search for the Student to update in case it exists.
-     * 
-    **/
+     */
     where: StudentWhereUniqueInput
     /**
      * In case the Student found by the `where` argument doesn't exist, create a new Student with this data.
-     * 
-    **/
+     */
     create: XOR<StudentCreateInput, StudentUncheckedCreateInput>
     /**
      * In case the Student was found with the provided `where` argument, update it with this data.
-     * 
-    **/
+     */
     update: XOR<StudentUpdateInput, StudentUncheckedUpdateInput>
   }
-
 
   /**
    * Student delete
    */
-  export type StudentDeleteArgs = {
+  export type StudentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Student
-     * 
-    **/
-    select?: StudentSelect | null
+     */
+    select?: StudentSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: StudentInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentInclude<ExtArgs> | null
     /**
      * Filter which Student to delete.
-     * 
-    **/
+     */
     where: StudentWhereUniqueInput
   }
-
 
   /**
    * Student deleteMany
    */
-  export type StudentDeleteManyArgs = {
+  export type StudentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Students to delete
-     * 
-    **/
+     */
     where?: StudentWhereInput
   }
 
-
   /**
-   * Student: findUniqueOrThrow
+   * Student.project
    */
-  export type StudentFindUniqueOrThrowArgs = StudentFindUniqueArgsBase
-      
-
-  /**
-   * Student: findFirstOrThrow
-   */
-  export type StudentFindFirstOrThrowArgs = StudentFindFirstArgsBase
-      
+  export type Student$projectArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    where?: ProjectWhereInput
+  }
 
   /**
    * Student without action
    */
-  export type StudentArgs = {
+  export type StudentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Student
-     * 
-    **/
-    select?: StudentSelect | null
+     */
+    select?: StudentSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: StudentInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentInclude<ExtArgs> | null
   }
-
 
 
   /**
    * Model Mentor
    */
-
 
   export type AggregateMentor = {
     _count: MentorCountAggregateOutputType | null
@@ -3022,39 +3347,34 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type MentorAggregateArgs = {
+  export type MentorAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Mentor to aggregate.
-     * 
-    **/
+     */
     where?: MentorWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Mentors to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<MentorOrderByWithRelationInput>
+     */
+    orderBy?: MentorOrderByWithRelationInput | MentorOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
-     * 
-    **/
+     */
     cursor?: MentorWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Mentors from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Mentors.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
@@ -3099,10 +3419,10 @@ export namespace Prisma {
 
 
 
-  export type MentorGroupByArgs = {
+  export type MentorGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MentorWhereInput
-    orderBy?: Enumerable<MentorOrderByWithAggregationInput>
-    by: Array<MentorScalarFieldEnum>
+    orderBy?: MentorOrderByWithAggregationInput | MentorOrderByWithAggregationInput[]
+    by: MentorScalarFieldEnum[] | MentorScalarFieldEnum
     having?: MentorScalarWhereWithAggregatesInput
     take?: number
     skip?: number
@@ -3112,7 +3432,6 @@ export namespace Prisma {
     _min?: MentorMinAggregateInputType
     _max?: MentorMaxAggregateInputType
   }
-
 
   export type MentorGroupByOutputType = {
     id: bigint
@@ -3129,9 +3448,9 @@ export namespace Prisma {
     _max: MentorMaxAggregateOutputType | null
   }
 
-  type GetMentorGroupByPayload<T extends MentorGroupByArgs> = PrismaPromise<
+  type GetMentorGroupByPayload<T extends MentorGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickArray<MentorGroupByOutputType, T['by']> &
+      PickEnumerable<MentorGroupByOutputType, T['by']> &
         {
           [P in ((keyof T) & (keyof MentorGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
@@ -3143,7 +3462,7 @@ export namespace Prisma {
     >
 
 
-  export type MentorSelect = {
+  export type MentorSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
     isApproved?: boolean
@@ -3151,42 +3470,52 @@ export namespace Prisma {
     tgUserId?: boolean
     tgUsername?: boolean
     projectId?: boolean
-    project?: boolean | ProjectArgs
+    project?: boolean | Mentor$projectArgs<ExtArgs>
+  }, ExtArgs["result"]["mentor"]>
+
+  export type MentorSelectScalar = {
+    id?: boolean
+    name?: boolean
+    isApproved?: boolean
+    tgChatId?: boolean
+    tgUserId?: boolean
+    tgUsername?: boolean
+    projectId?: boolean
   }
 
-  export type MentorInclude = {
-    project?: boolean | ProjectArgs
+
+  export type MentorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | Mentor$projectArgs<ExtArgs>
   }
 
-  export type MentorGetPayload<
-    S extends boolean | null | undefined | MentorArgs,
-    U = keyof S
-      > = S extends true
-        ? Mentor
-    : S extends undefined
-    ? never
-    : S extends MentorArgs | MentorFindManyArgs
-    ?'include' extends U
-    ? Mentor  & {
-    [P in TrueKeys<S['include']>]:
-        P extends 'project' ? ProjectGetPayload<Exclude<S['include'], undefined | null>[P]> | null :  never
-  } 
-    : 'select' extends U
-    ? {
-    [P in TrueKeys<S['select']>]:
-        P extends 'project' ? ProjectGetPayload<Exclude<S['select'], undefined | null>[P]> | null :  P extends keyof Mentor ? Mentor[P] : never
-  } 
-    : Mentor
-  : Mentor
+
+  export type $MentorPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Mentor"
+    objects: {
+      project: Prisma.$ProjectPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      name: string
+      isApproved: boolean
+      tgChatId: bigint
+      tgUserId: bigint
+      tgUsername: string | null
+      projectId: bigint | null
+    }, ExtArgs["result"]["mentor"]>
+    composites: {}
+  }
 
 
-  type MentorCountArgs = Merge<
-    Omit<MentorFindManyArgs, 'select' | 'include'> & {
+  type MentorGetPayload<S extends boolean | null | undefined | MentorDefaultArgs> = $Result.GetResult<Prisma.$MentorPayload, S>
+
+  type MentorCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<MentorFindManyArgs, 'select' | 'include' | 'distinct'> & {
       select?: MentorCountAggregateInputType | true
     }
-  >
 
-  export interface MentorDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+  export interface MentorDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Mentor'], meta: { name: 'Mentor' } }
     /**
      * Find zero or one Mentor that matches the filter.
      * @param {MentorFindUniqueArgs} args - Arguments to find a Mentor
@@ -3198,9 +3527,25 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends MentorFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, MentorFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Mentor'> extends True ? CheckSelect<T, Prisma__MentorClient<Mentor>, Prisma__MentorClient<MentorGetPayload<T>>> : CheckSelect<T, Prisma__MentorClient<Mentor | null, null>, Prisma__MentorClient<MentorGetPayload<T> | null, null>>
+    findUnique<T extends MentorFindUniqueArgs<ExtArgs>>(
+      args: SelectSubset<T, MentorFindUniqueArgs<ExtArgs>>
+    ): Prisma__MentorClient<$Result.GetResult<Prisma.$MentorPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+
+    /**
+     * Find one Mentor that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {MentorFindUniqueOrThrowArgs} args - Arguments to find a Mentor
+     * @example
+     * // Get one Mentor
+     * const mentor = await prisma.mentor.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends MentorFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, MentorFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__MentorClient<$Result.GetResult<Prisma.$MentorPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
 
     /**
      * Find the first Mentor that matches the filter.
@@ -3215,15 +3560,33 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends MentorFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, MentorFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Mentor'> extends True ? CheckSelect<T, Prisma__MentorClient<Mentor>, Prisma__MentorClient<MentorGetPayload<T>>> : CheckSelect<T, Prisma__MentorClient<Mentor | null, null>, Prisma__MentorClient<MentorGetPayload<T> | null, null>>
+    findFirst<T extends MentorFindFirstArgs<ExtArgs>>(
+      args?: SelectSubset<T, MentorFindFirstArgs<ExtArgs>>
+    ): Prisma__MentorClient<$Result.GetResult<Prisma.$MentorPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+
+    /**
+     * Find the first Mentor that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MentorFindFirstOrThrowArgs} args - Arguments to find a Mentor
+     * @example
+     * // Get one Mentor
+     * const mentor = await prisma.mentor.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends MentorFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, MentorFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__MentorClient<$Result.GetResult<Prisma.$MentorPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
 
     /**
      * Find zero or more Mentors that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {MentorFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @param {MentorFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
      * // Get all Mentors
      * const mentors = await prisma.mentor.findMany()
@@ -3235,9 +3598,9 @@ export namespace Prisma {
      * const mentorWithIdOnly = await prisma.mentor.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends MentorFindManyArgs>(
-      args?: SelectSubset<T, MentorFindManyArgs>
-    ): CheckSelect<T, PrismaPromise<Array<Mentor>>, PrismaPromise<Array<MentorGetPayload<T>>>>
+    findMany<T extends MentorFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, MentorFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MentorPayload<ExtArgs>, T, 'findMany'>>
 
     /**
      * Create a Mentor.
@@ -3251,25 +3614,51 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends MentorCreateArgs>(
-      args: SelectSubset<T, MentorCreateArgs>
-    ): CheckSelect<T, Prisma__MentorClient<Mentor>, Prisma__MentorClient<MentorGetPayload<T>>>
+    create<T extends MentorCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, MentorCreateArgs<ExtArgs>>
+    ): Prisma__MentorClient<$Result.GetResult<Prisma.$MentorPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
 
     /**
      * Create many Mentors.
-     *     @param {MentorCreateManyArgs} args - Arguments to create many Mentors.
-     *     @example
-     *     // Create many Mentors
-     *     const mentor = await prisma.mentor.createMany({
-     *       data: {
-     *         // ... provide data here
-     *       }
-     *     })
+     * @param {MentorCreateManyArgs} args - Arguments to create many Mentors.
+     * @example
+     * // Create many Mentors
+     * const mentor = await prisma.mentor.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
      *     
     **/
-    createMany<T extends MentorCreateManyArgs>(
-      args?: SelectSubset<T, MentorCreateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    createMany<T extends MentorCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, MentorCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Mentors and returns the data saved in the database.
+     * @param {MentorCreateManyAndReturnArgs} args - Arguments to create many Mentors.
+     * @example
+     * // Create many Mentors
+     * const mentor = await prisma.mentor.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Mentors and only return the `id`
+     * const mentorWithIdOnly = await prisma.mentor.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+    **/
+    createManyAndReturn<T extends MentorCreateManyAndReturnArgs<ExtArgs>>(
+      args?: SelectSubset<T, MentorCreateManyAndReturnArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MentorPayload<ExtArgs>, T, 'createManyAndReturn'>>
 
     /**
      * Delete a Mentor.
@@ -3283,9 +3672,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends MentorDeleteArgs>(
-      args: SelectSubset<T, MentorDeleteArgs>
-    ): CheckSelect<T, Prisma__MentorClient<Mentor>, Prisma__MentorClient<MentorGetPayload<T>>>
+    delete<T extends MentorDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, MentorDeleteArgs<ExtArgs>>
+    ): Prisma__MentorClient<$Result.GetResult<Prisma.$MentorPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
 
     /**
      * Update one Mentor.
@@ -3302,9 +3691,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends MentorUpdateArgs>(
-      args: SelectSubset<T, MentorUpdateArgs>
-    ): CheckSelect<T, Prisma__MentorClient<Mentor>, Prisma__MentorClient<MentorGetPayload<T>>>
+    update<T extends MentorUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, MentorUpdateArgs<ExtArgs>>
+    ): Prisma__MentorClient<$Result.GetResult<Prisma.$MentorPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
 
     /**
      * Delete zero or more Mentors.
@@ -3318,9 +3707,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends MentorDeleteManyArgs>(
-      args?: SelectSubset<T, MentorDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends MentorDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, MentorDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more Mentors.
@@ -3339,9 +3728,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends MentorUpdateManyArgs>(
-      args: SelectSubset<T, MentorUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends MentorUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, MentorUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one Mentor.
@@ -3360,43 +3749,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends MentorUpsertArgs>(
-      args: SelectSubset<T, MentorUpsertArgs>
-    ): CheckSelect<T, Prisma__MentorClient<Mentor>, Prisma__MentorClient<MentorGetPayload<T>>>
-
-    /**
-     * Find one Mentor that matches the filter or throw
-     * `NotFoundError` if no matches were found.
-     * @param {MentorFindUniqueOrThrowArgs} args - Arguments to find a Mentor
-     * @example
-     * // Get one Mentor
-     * const mentor = await prisma.mentor.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUniqueOrThrow<T extends MentorFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, MentorFindUniqueOrThrowArgs>
-    ): CheckSelect<T, Prisma__MentorClient<Mentor>, Prisma__MentorClient<MentorGetPayload<T>>>
-
-    /**
-     * Find the first Mentor that matches the filter or
-     * throw `NotFoundError` if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MentorFindFirstOrThrowArgs} args - Arguments to find a Mentor
-     * @example
-     * // Get one Mentor
-     * const mentor = await prisma.mentor.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirstOrThrow<T extends MentorFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, MentorFindFirstOrThrowArgs>
-    ): CheckSelect<T, Prisma__MentorClient<Mentor>, Prisma__MentorClient<MentorGetPayload<T>>>
+    upsert<T extends MentorUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, MentorUpsertArgs<ExtArgs>>
+    ): Prisma__MentorClient<$Result.GetResult<Prisma.$MentorPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
 
     /**
      * Count the number of Mentors.
@@ -3413,8 +3768,8 @@ export namespace Prisma {
     **/
     count<T extends MentorCountArgs>(
       args?: Subset<T, MentorCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], MentorCountAggregateOutputType>
@@ -3445,7 +3800,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends MentorAggregateArgs>(args: Subset<T, MentorAggregateArgs>): PrismaPromise<GetMentorAggregateType<T>>
+    aggregate<T extends MentorAggregateArgs>(args: Subset<T, MentorAggregateArgs>): Prisma.PrismaPromise<GetMentorAggregateType<T>>
 
     /**
      * Group by Mentor.
@@ -3475,7 +3830,7 @@ export namespace Prisma {
         ? { orderBy: MentorGroupByArgs['orderBy'] }
         : { orderBy?: MentorGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends TupleToUnion<T['by']>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
       HavingFields extends GetHavingFields<T['having']>,
       HavingValid extends Has<ByFields, HavingFields>,
@@ -3522,8 +3877,11 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, MentorGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMentorGroupByPayload<T> : PrismaPromise<InputErrors>
-
+    >(args: SubsetIntersection<T, MentorGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMentorGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Mentor model
+   */
+  readonly fields: MentorFieldRefs;
   }
 
   /**
@@ -3532,383 +3890,396 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__MentorClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
-    private readonly _dmmf;
-    private readonly _fetcher;
-    private readonly _queryType;
-    private readonly _rootField;
-    private readonly _clientMethod;
-    private readonly _args;
-    private readonly _dataPath;
-    private readonly _errorFormat;
-    private readonly _measurePerformance?;
-    private _isList;
-    private _callsite;
-    private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+  export interface Prisma__MentorClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
 
-    project<T extends ProjectArgs = {}>(args?: Subset<T, ProjectArgs>): CheckSelect<T, Prisma__ProjectClient<Project | Null>, Prisma__ProjectClient<ProjectGetPayload<T> | Null>>;
+    project<T extends Mentor$projectArgs<ExtArgs> = {}>(args?: Subset<T, Mentor$projectArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
 
-    private get _document();
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>;
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>;
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
   }
 
 
 
-  // Custom InputTypes
-
   /**
-   * Mentor base type for findUnique actions
+   * Fields of the Mentor model
+   */ 
+  interface MentorFieldRefs {
+    readonly id: FieldRef<"Mentor", 'BigInt'>
+    readonly name: FieldRef<"Mentor", 'String'>
+    readonly isApproved: FieldRef<"Mentor", 'Boolean'>
+    readonly tgChatId: FieldRef<"Mentor", 'BigInt'>
+    readonly tgUserId: FieldRef<"Mentor", 'BigInt'>
+    readonly tgUsername: FieldRef<"Mentor", 'String'>
+    readonly projectId: FieldRef<"Mentor", 'BigInt'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Mentor findUnique
    */
-  export type MentorFindUniqueArgsBase = {
+  export type MentorFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Mentor
-     * 
-    **/
-    select?: MentorSelect | null
+     */
+    select?: MentorSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: MentorInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MentorInclude<ExtArgs> | null
     /**
      * Filter, which Mentor to fetch.
-     * 
-    **/
+     */
     where: MentorWhereUniqueInput
   }
 
   /**
-   * Mentor: findUnique
+   * Mentor findUniqueOrThrow
    */
-  export interface MentorFindUniqueArgs extends MentorFindUniqueArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
-
-  /**
-   * Mentor base type for findFirst actions
-   */
-  export type MentorFindFirstArgsBase = {
+  export type MentorFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Mentor
-     * 
-    **/
-    select?: MentorSelect | null
+     */
+    select?: MentorSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: MentorInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MentorInclude<ExtArgs> | null
     /**
      * Filter, which Mentor to fetch.
-     * 
-    **/
+     */
+    where: MentorWhereUniqueInput
+  }
+
+  /**
+   * Mentor findFirst
+   */
+  export type MentorFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Mentor
+     */
+    select?: MentorSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MentorInclude<ExtArgs> | null
+    /**
+     * Filter, which Mentor to fetch.
+     */
     where?: MentorWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Mentors to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<MentorOrderByWithRelationInput>
+     */
+    orderBy?: MentorOrderByWithRelationInput | MentorOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Mentors.
-     * 
-    **/
+     */
     cursor?: MentorWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Mentors from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Mentors.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Mentors.
-     * 
-    **/
-    distinct?: Enumerable<MentorScalarFieldEnum>
+     */
+    distinct?: MentorScalarFieldEnum | MentorScalarFieldEnum[]
   }
 
   /**
-   * Mentor: findFirst
+   * Mentor findFirstOrThrow
    */
-  export interface MentorFindFirstArgs extends MentorFindFirstArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
-
-  /**
-   * Mentor findMany
-   */
-  export type MentorFindManyArgs = {
+  export type MentorFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Mentor
-     * 
-    **/
-    select?: MentorSelect | null
+     */
+    select?: MentorSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: MentorInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MentorInclude<ExtArgs> | null
     /**
-     * Filter, which Mentors to fetch.
-     * 
-    **/
+     * Filter, which Mentor to fetch.
+     */
     where?: MentorWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Mentors to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<MentorOrderByWithRelationInput>
+     */
+    orderBy?: MentorOrderByWithRelationInput | MentorOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing Mentors.
-     * 
-    **/
+     * Sets the position for searching for Mentors.
+     */
     cursor?: MentorWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Mentors from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Mentors.
-     * 
-    **/
+     */
     skip?: number
-    distinct?: Enumerable<MentorScalarFieldEnum>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Mentors.
+     */
+    distinct?: MentorScalarFieldEnum | MentorScalarFieldEnum[]
   }
 
+  /**
+   * Mentor findMany
+   */
+  export type MentorFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Mentor
+     */
+    select?: MentorSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MentorInclude<ExtArgs> | null
+    /**
+     * Filter, which Mentors to fetch.
+     */
+    where?: MentorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Mentors to fetch.
+     */
+    orderBy?: MentorOrderByWithRelationInput | MentorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Mentors.
+     */
+    cursor?: MentorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Mentors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Mentors.
+     */
+    skip?: number
+    distinct?: MentorScalarFieldEnum | MentorScalarFieldEnum[]
+  }
 
   /**
    * Mentor create
    */
-  export type MentorCreateArgs = {
+  export type MentorCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Mentor
-     * 
-    **/
-    select?: MentorSelect | null
+     */
+    select?: MentorSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: MentorInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MentorInclude<ExtArgs> | null
     /**
      * The data needed to create a Mentor.
-     * 
-    **/
+     */
     data: XOR<MentorCreateInput, MentorUncheckedCreateInput>
   }
-
 
   /**
    * Mentor createMany
    */
-  export type MentorCreateManyArgs = {
+  export type MentorCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The data used to create many Mentors.
-     * 
-    **/
-    data: Enumerable<MentorCreateManyInput>
+     */
+    data: MentorCreateManyInput | MentorCreateManyInput[]
     skipDuplicates?: boolean
   }
 
+  /**
+   * Mentor createManyAndReturn
+   */
+  export type MentorCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Mentor
+     */
+    select?: MentorSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MentorInclude<ExtArgs> | null
+    /**
+     * The data used to create many Mentors.
+     */
+    data: MentorCreateManyInput | MentorCreateManyInput[]
+    skipDuplicates?: boolean
+  }
 
   /**
    * Mentor update
    */
-  export type MentorUpdateArgs = {
+  export type MentorUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Mentor
-     * 
-    **/
-    select?: MentorSelect | null
+     */
+    select?: MentorSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: MentorInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MentorInclude<ExtArgs> | null
     /**
      * The data needed to update a Mentor.
-     * 
-    **/
+     */
     data: XOR<MentorUpdateInput, MentorUncheckedUpdateInput>
     /**
      * Choose, which Mentor to update.
-     * 
-    **/
+     */
     where: MentorWhereUniqueInput
   }
-
 
   /**
    * Mentor updateMany
    */
-  export type MentorUpdateManyArgs = {
+  export type MentorUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The data used to update Mentors.
-     * 
-    **/
+     */
     data: XOR<MentorUpdateManyMutationInput, MentorUncheckedUpdateManyInput>
     /**
      * Filter which Mentors to update
-     * 
-    **/
+     */
     where?: MentorWhereInput
   }
-
 
   /**
    * Mentor upsert
    */
-  export type MentorUpsertArgs = {
+  export type MentorUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Mentor
-     * 
-    **/
-    select?: MentorSelect | null
+     */
+    select?: MentorSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: MentorInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MentorInclude<ExtArgs> | null
     /**
      * The filter to search for the Mentor to update in case it exists.
-     * 
-    **/
+     */
     where: MentorWhereUniqueInput
     /**
      * In case the Mentor found by the `where` argument doesn't exist, create a new Mentor with this data.
-     * 
-    **/
+     */
     create: XOR<MentorCreateInput, MentorUncheckedCreateInput>
     /**
      * In case the Mentor was found with the provided `where` argument, update it with this data.
-     * 
-    **/
+     */
     update: XOR<MentorUpdateInput, MentorUncheckedUpdateInput>
   }
-
 
   /**
    * Mentor delete
    */
-  export type MentorDeleteArgs = {
+  export type MentorDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Mentor
-     * 
-    **/
-    select?: MentorSelect | null
+     */
+    select?: MentorSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: MentorInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MentorInclude<ExtArgs> | null
     /**
      * Filter which Mentor to delete.
-     * 
-    **/
+     */
     where: MentorWhereUniqueInput
   }
-
 
   /**
    * Mentor deleteMany
    */
-  export type MentorDeleteManyArgs = {
+  export type MentorDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Mentors to delete
-     * 
-    **/
+     */
     where?: MentorWhereInput
   }
 
-
   /**
-   * Mentor: findUniqueOrThrow
+   * Mentor.project
    */
-  export type MentorFindUniqueOrThrowArgs = MentorFindUniqueArgsBase
-      
-
-  /**
-   * Mentor: findFirstOrThrow
-   */
-  export type MentorFindFirstOrThrowArgs = MentorFindFirstArgsBase
-      
+  export type Mentor$projectArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    where?: ProjectWhereInput
+  }
 
   /**
    * Mentor without action
    */
-  export type MentorArgs = {
+  export type MentorDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Mentor
-     * 
-    **/
-    select?: MentorSelect | null
+     */
+    select?: MentorSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: MentorInclude | null
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MentorInclude<ExtArgs> | null
   }
-
 
 
   /**
    * Model Admin
    */
-
 
   export type AggregateAdmin = {
     _count: AdminCountAggregateOutputType | null
@@ -3981,39 +4352,34 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type AdminAggregateArgs = {
+  export type AdminAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Admin to aggregate.
-     * 
-    **/
+     */
     where?: AdminWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Admins to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<AdminOrderByWithRelationInput>
+     */
+    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
-     * 
-    **/
+     */
     cursor?: AdminWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Admins from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Admins.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
@@ -4058,10 +4424,10 @@ export namespace Prisma {
 
 
 
-  export type AdminGroupByArgs = {
+  export type AdminGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AdminWhereInput
-    orderBy?: Enumerable<AdminOrderByWithAggregationInput>
-    by: Array<AdminScalarFieldEnum>
+    orderBy?: AdminOrderByWithAggregationInput | AdminOrderByWithAggregationInput[]
+    by: AdminScalarFieldEnum[] | AdminScalarFieldEnum
     having?: AdminScalarWhereWithAggregatesInput
     take?: number
     skip?: number
@@ -4071,7 +4437,6 @@ export namespace Prisma {
     _min?: AdminMinAggregateInputType
     _max?: AdminMaxAggregateInputType
   }
-
 
   export type AdminGroupByOutputType = {
     id: bigint
@@ -4084,9 +4449,9 @@ export namespace Prisma {
     _max: AdminMaxAggregateOutputType | null
   }
 
-  type GetAdminGroupByPayload<T extends AdminGroupByArgs> = PrismaPromise<
+  type GetAdminGroupByPayload<T extends AdminGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickArray<AdminGroupByOutputType, T['by']> &
+      PickEnumerable<AdminGroupByOutputType, T['by']> &
         {
           [P in ((keyof T) & (keyof AdminGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
@@ -4098,38 +4463,41 @@ export namespace Prisma {
     >
 
 
-  export type AdminSelect = {
+  export type AdminSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tgChatId?: boolean
+    tgUserId?: boolean
+  }, ExtArgs["result"]["admin"]>
+
+  export type AdminSelectScalar = {
     id?: boolean
     tgChatId?: boolean
     tgUserId?: boolean
   }
 
-  export type AdminGetPayload<
-    S extends boolean | null | undefined | AdminArgs,
-    U = keyof S
-      > = S extends true
-        ? Admin
-    : S extends undefined
-    ? never
-    : S extends AdminArgs | AdminFindManyArgs
-    ?'include' extends U
-    ? Admin 
-    : 'select' extends U
-    ? {
-    [P in TrueKeys<S['select']>]:
-    P extends keyof Admin ? Admin[P] : never
-  } 
-    : Admin
-  : Admin
 
 
-  type AdminCountArgs = Merge<
-    Omit<AdminFindManyArgs, 'select' | 'include'> & {
+  export type $AdminPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Admin"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      tgChatId: bigint
+      tgUserId: bigint
+    }, ExtArgs["result"]["admin"]>
+    composites: {}
+  }
+
+
+  type AdminGetPayload<S extends boolean | null | undefined | AdminDefaultArgs> = $Result.GetResult<Prisma.$AdminPayload, S>
+
+  type AdminCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<AdminFindManyArgs, 'select' | 'include' | 'distinct'> & {
       select?: AdminCountAggregateInputType | true
     }
-  >
 
-  export interface AdminDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+  export interface AdminDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Admin'], meta: { name: 'Admin' } }
     /**
      * Find zero or one Admin that matches the filter.
      * @param {AdminFindUniqueArgs} args - Arguments to find a Admin
@@ -4141,9 +4509,25 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends AdminFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, AdminFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Admin'> extends True ? CheckSelect<T, Prisma__AdminClient<Admin>, Prisma__AdminClient<AdminGetPayload<T>>> : CheckSelect<T, Prisma__AdminClient<Admin | null, null>, Prisma__AdminClient<AdminGetPayload<T> | null, null>>
+    findUnique<T extends AdminFindUniqueArgs<ExtArgs>>(
+      args: SelectSubset<T, AdminFindUniqueArgs<ExtArgs>>
+    ): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+
+    /**
+     * Find one Admin that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {AdminFindUniqueOrThrowArgs} args - Arguments to find a Admin
+     * @example
+     * // Get one Admin
+     * const admin = await prisma.admin.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends AdminFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, AdminFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
 
     /**
      * Find the first Admin that matches the filter.
@@ -4158,15 +4542,33 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends AdminFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, AdminFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Admin'> extends True ? CheckSelect<T, Prisma__AdminClient<Admin>, Prisma__AdminClient<AdminGetPayload<T>>> : CheckSelect<T, Prisma__AdminClient<Admin | null, null>, Prisma__AdminClient<AdminGetPayload<T> | null, null>>
+    findFirst<T extends AdminFindFirstArgs<ExtArgs>>(
+      args?: SelectSubset<T, AdminFindFirstArgs<ExtArgs>>
+    ): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+
+    /**
+     * Find the first Admin that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminFindFirstOrThrowArgs} args - Arguments to find a Admin
+     * @example
+     * // Get one Admin
+     * const admin = await prisma.admin.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends AdminFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, AdminFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
 
     /**
      * Find zero or more Admins that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdminFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @param {AdminFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
      * // Get all Admins
      * const admins = await prisma.admin.findMany()
@@ -4178,9 +4580,9 @@ export namespace Prisma {
      * const adminWithIdOnly = await prisma.admin.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends AdminFindManyArgs>(
-      args?: SelectSubset<T, AdminFindManyArgs>
-    ): CheckSelect<T, PrismaPromise<Array<Admin>>, PrismaPromise<Array<AdminGetPayload<T>>>>
+    findMany<T extends AdminFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, AdminFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, 'findMany'>>
 
     /**
      * Create a Admin.
@@ -4194,25 +4596,51 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends AdminCreateArgs>(
-      args: SelectSubset<T, AdminCreateArgs>
-    ): CheckSelect<T, Prisma__AdminClient<Admin>, Prisma__AdminClient<AdminGetPayload<T>>>
+    create<T extends AdminCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, AdminCreateArgs<ExtArgs>>
+    ): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
 
     /**
      * Create many Admins.
-     *     @param {AdminCreateManyArgs} args - Arguments to create many Admins.
-     *     @example
-     *     // Create many Admins
-     *     const admin = await prisma.admin.createMany({
-     *       data: {
-     *         // ... provide data here
-     *       }
-     *     })
+     * @param {AdminCreateManyArgs} args - Arguments to create many Admins.
+     * @example
+     * // Create many Admins
+     * const admin = await prisma.admin.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
      *     
     **/
-    createMany<T extends AdminCreateManyArgs>(
-      args?: SelectSubset<T, AdminCreateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    createMany<T extends AdminCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, AdminCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Admins and returns the data saved in the database.
+     * @param {AdminCreateManyAndReturnArgs} args - Arguments to create many Admins.
+     * @example
+     * // Create many Admins
+     * const admin = await prisma.admin.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Admins and only return the `id`
+     * const adminWithIdOnly = await prisma.admin.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+    **/
+    createManyAndReturn<T extends AdminCreateManyAndReturnArgs<ExtArgs>>(
+      args?: SelectSubset<T, AdminCreateManyAndReturnArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, 'createManyAndReturn'>>
 
     /**
      * Delete a Admin.
@@ -4226,9 +4654,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends AdminDeleteArgs>(
-      args: SelectSubset<T, AdminDeleteArgs>
-    ): CheckSelect<T, Prisma__AdminClient<Admin>, Prisma__AdminClient<AdminGetPayload<T>>>
+    delete<T extends AdminDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, AdminDeleteArgs<ExtArgs>>
+    ): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
 
     /**
      * Update one Admin.
@@ -4245,9 +4673,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends AdminUpdateArgs>(
-      args: SelectSubset<T, AdminUpdateArgs>
-    ): CheckSelect<T, Prisma__AdminClient<Admin>, Prisma__AdminClient<AdminGetPayload<T>>>
+    update<T extends AdminUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, AdminUpdateArgs<ExtArgs>>
+    ): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
 
     /**
      * Delete zero or more Admins.
@@ -4261,9 +4689,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends AdminDeleteManyArgs>(
-      args?: SelectSubset<T, AdminDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends AdminDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, AdminDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more Admins.
@@ -4282,9 +4710,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends AdminUpdateManyArgs>(
-      args: SelectSubset<T, AdminUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends AdminUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, AdminUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one Admin.
@@ -4303,43 +4731,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends AdminUpsertArgs>(
-      args: SelectSubset<T, AdminUpsertArgs>
-    ): CheckSelect<T, Prisma__AdminClient<Admin>, Prisma__AdminClient<AdminGetPayload<T>>>
-
-    /**
-     * Find one Admin that matches the filter or throw
-     * `NotFoundError` if no matches were found.
-     * @param {AdminFindUniqueOrThrowArgs} args - Arguments to find a Admin
-     * @example
-     * // Get one Admin
-     * const admin = await prisma.admin.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUniqueOrThrow<T extends AdminFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, AdminFindUniqueOrThrowArgs>
-    ): CheckSelect<T, Prisma__AdminClient<Admin>, Prisma__AdminClient<AdminGetPayload<T>>>
-
-    /**
-     * Find the first Admin that matches the filter or
-     * throw `NotFoundError` if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdminFindFirstOrThrowArgs} args - Arguments to find a Admin
-     * @example
-     * // Get one Admin
-     * const admin = await prisma.admin.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirstOrThrow<T extends AdminFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, AdminFindFirstOrThrowArgs>
-    ): CheckSelect<T, Prisma__AdminClient<Admin>, Prisma__AdminClient<AdminGetPayload<T>>>
+    upsert<T extends AdminUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, AdminUpsertArgs<ExtArgs>>
+    ): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
 
     /**
      * Count the number of Admins.
@@ -4356,8 +4750,8 @@ export namespace Prisma {
     **/
     count<T extends AdminCountArgs>(
       args?: Subset<T, AdminCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], AdminCountAggregateOutputType>
@@ -4388,7 +4782,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends AdminAggregateArgs>(args: Subset<T, AdminAggregateArgs>): PrismaPromise<GetAdminAggregateType<T>>
+    aggregate<T extends AdminAggregateArgs>(args: Subset<T, AdminAggregateArgs>): Prisma.PrismaPromise<GetAdminAggregateType<T>>
 
     /**
      * Group by Admin.
@@ -4418,7 +4812,7 @@ export namespace Prisma {
         ? { orderBy: AdminGroupByArgs['orderBy'] }
         : { orderBy?: AdminGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends TupleToUnion<T['by']>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
       HavingFields extends GetHavingFields<T['having']>,
       HavingValid extends Has<ByFields, HavingFields>,
@@ -4465,8 +4859,11 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, AdminGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdminGroupByPayload<T> : PrismaPromise<InputErrors>
-
+    >(args: SubsetIntersection<T, AdminGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdminGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Admin model
+   */
+  readonly fields: AdminFieldRefs;
   }
 
   /**
@@ -4475,365 +4872,338 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__AdminClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
-    private readonly _dmmf;
-    private readonly _fetcher;
-    private readonly _queryType;
-    private readonly _rootField;
-    private readonly _clientMethod;
-    private readonly _args;
-    private readonly _dataPath;
-    private readonly _errorFormat;
-    private readonly _measurePerformance?;
-    private _isList;
-    private _callsite;
-    private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+  export interface Prisma__AdminClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
 
 
-    private get _document();
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>;
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>;
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
   }
 
 
 
-  // Custom InputTypes
-
   /**
-   * Admin base type for findUnique actions
+   * Fields of the Admin model
+   */ 
+  interface AdminFieldRefs {
+    readonly id: FieldRef<"Admin", 'BigInt'>
+    readonly tgChatId: FieldRef<"Admin", 'BigInt'>
+    readonly tgUserId: FieldRef<"Admin", 'BigInt'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Admin findUnique
    */
-  export type AdminFindUniqueArgsBase = {
+  export type AdminFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Admin
-     * 
-    **/
-    select?: AdminSelect | null
+     */
+    select?: AdminSelect<ExtArgs> | null
     /**
      * Filter, which Admin to fetch.
-     * 
-    **/
+     */
     where: AdminWhereUniqueInput
   }
 
   /**
-   * Admin: findUnique
+   * Admin findUniqueOrThrow
    */
-  export interface AdminFindUniqueArgs extends AdminFindUniqueArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
-
-  /**
-   * Admin base type for findFirst actions
-   */
-  export type AdminFindFirstArgsBase = {
+  export type AdminFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Admin
-     * 
-    **/
-    select?: AdminSelect | null
+     */
+    select?: AdminSelect<ExtArgs> | null
     /**
      * Filter, which Admin to fetch.
-     * 
-    **/
+     */
+    where: AdminWhereUniqueInput
+  }
+
+  /**
+   * Admin findFirst
+   */
+  export type AdminFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Filter, which Admin to fetch.
+     */
     where?: AdminWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Admins to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<AdminOrderByWithRelationInput>
+     */
+    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Admins.
-     * 
-    **/
+     */
     cursor?: AdminWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Admins from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Admins.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Admins.
-     * 
-    **/
-    distinct?: Enumerable<AdminScalarFieldEnum>
+     */
+    distinct?: AdminScalarFieldEnum | AdminScalarFieldEnum[]
   }
 
   /**
-   * Admin: findFirst
+   * Admin findFirstOrThrow
    */
-  export interface AdminFindFirstArgs extends AdminFindFirstArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
-
-  /**
-   * Admin findMany
-   */
-  export type AdminFindManyArgs = {
+  export type AdminFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Admin
-     * 
-    **/
-    select?: AdminSelect | null
+     */
+    select?: AdminSelect<ExtArgs> | null
     /**
-     * Filter, which Admins to fetch.
-     * 
-    **/
+     * Filter, which Admin to fetch.
+     */
     where?: AdminWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Admins to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<AdminOrderByWithRelationInput>
+     */
+    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing Admins.
-     * 
-    **/
+     * Sets the position for searching for Admins.
+     */
     cursor?: AdminWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Admins from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Admins.
-     * 
-    **/
+     */
     skip?: number
-    distinct?: Enumerable<AdminScalarFieldEnum>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Admins.
+     */
+    distinct?: AdminScalarFieldEnum | AdminScalarFieldEnum[]
   }
 
+  /**
+   * Admin findMany
+   */
+  export type AdminFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Filter, which Admins to fetch.
+     */
+    where?: AdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Admins to fetch.
+     */
+    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Admins.
+     */
+    cursor?: AdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Admins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Admins.
+     */
+    skip?: number
+    distinct?: AdminScalarFieldEnum | AdminScalarFieldEnum[]
+  }
 
   /**
    * Admin create
    */
-  export type AdminCreateArgs = {
+  export type AdminCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Admin
-     * 
-    **/
-    select?: AdminSelect | null
+     */
+    select?: AdminSelect<ExtArgs> | null
     /**
      * The data needed to create a Admin.
-     * 
-    **/
+     */
     data: XOR<AdminCreateInput, AdminUncheckedCreateInput>
   }
-
 
   /**
    * Admin createMany
    */
-  export type AdminCreateManyArgs = {
+  export type AdminCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The data used to create many Admins.
-     * 
-    **/
-    data: Enumerable<AdminCreateManyInput>
+     */
+    data: AdminCreateManyInput | AdminCreateManyInput[]
     skipDuplicates?: boolean
   }
 
+  /**
+   * Admin createManyAndReturn
+   */
+  export type AdminCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * The data used to create many Admins.
+     */
+    data: AdminCreateManyInput | AdminCreateManyInput[]
+    skipDuplicates?: boolean
+  }
 
   /**
    * Admin update
    */
-  export type AdminUpdateArgs = {
+  export type AdminUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Admin
-     * 
-    **/
-    select?: AdminSelect | null
+     */
+    select?: AdminSelect<ExtArgs> | null
     /**
      * The data needed to update a Admin.
-     * 
-    **/
+     */
     data: XOR<AdminUpdateInput, AdminUncheckedUpdateInput>
     /**
      * Choose, which Admin to update.
-     * 
-    **/
+     */
     where: AdminWhereUniqueInput
   }
-
 
   /**
    * Admin updateMany
    */
-  export type AdminUpdateManyArgs = {
+  export type AdminUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The data used to update Admins.
-     * 
-    **/
+     */
     data: XOR<AdminUpdateManyMutationInput, AdminUncheckedUpdateManyInput>
     /**
      * Filter which Admins to update
-     * 
-    **/
+     */
     where?: AdminWhereInput
   }
-
 
   /**
    * Admin upsert
    */
-  export type AdminUpsertArgs = {
+  export type AdminUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Admin
-     * 
-    **/
-    select?: AdminSelect | null
+     */
+    select?: AdminSelect<ExtArgs> | null
     /**
      * The filter to search for the Admin to update in case it exists.
-     * 
-    **/
+     */
     where: AdminWhereUniqueInput
     /**
      * In case the Admin found by the `where` argument doesn't exist, create a new Admin with this data.
-     * 
-    **/
+     */
     create: XOR<AdminCreateInput, AdminUncheckedCreateInput>
     /**
      * In case the Admin was found with the provided `where` argument, update it with this data.
-     * 
-    **/
+     */
     update: XOR<AdminUpdateInput, AdminUncheckedUpdateInput>
   }
-
 
   /**
    * Admin delete
    */
-  export type AdminDeleteArgs = {
+  export type AdminDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Admin
-     * 
-    **/
-    select?: AdminSelect | null
+     */
+    select?: AdminSelect<ExtArgs> | null
     /**
      * Filter which Admin to delete.
-     * 
-    **/
+     */
     where: AdminWhereUniqueInput
   }
-
 
   /**
    * Admin deleteMany
    */
-  export type AdminDeleteManyArgs = {
+  export type AdminDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Admins to delete
-     * 
-    **/
+     */
     where?: AdminWhereInput
   }
-
-
-  /**
-   * Admin: findUniqueOrThrow
-   */
-  export type AdminFindUniqueOrThrowArgs = AdminFindUniqueArgsBase
-      
-
-  /**
-   * Admin: findFirstOrThrow
-   */
-  export type AdminFindFirstOrThrowArgs = AdminFindFirstArgsBase
-      
 
   /**
    * Admin without action
    */
-  export type AdminArgs = {
+  export type AdminDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Admin
-     * 
-    **/
-    select?: AdminSelect | null
+     */
+    select?: AdminSelect<ExtArgs> | null
   }
-
 
 
   /**
    * Enums
    */
 
-  // Based on
-  // https://github.com/microsoft/TypeScript/issues/3192#issuecomment-261720275
-
-  export const AdminScalarFieldEnum: {
-    id: 'id',
-    tgChatId: 'tgChatId',
-    tgUserId: 'tgUserId'
+  export const TransactionIsolationLevel: {
+    Serializable: 'Serializable'
   };
 
-  export type AdminScalarFieldEnum = (typeof AdminScalarFieldEnum)[keyof typeof AdminScalarFieldEnum]
-
-
-  export const MentorScalarFieldEnum: {
-    id: 'id',
-    name: 'name',
-    isApproved: 'isApproved',
-    tgChatId: 'tgChatId',
-    tgUserId: 'tgUserId',
-    tgUsername: 'tgUsername',
-    projectId: 'projectId'
-  };
-
-  export type MentorScalarFieldEnum = (typeof MentorScalarFieldEnum)[keyof typeof MentorScalarFieldEnum]
+  export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
   export const ProjectScalarFieldEnum: {
@@ -4843,22 +5213,6 @@ export namespace Prisma {
   };
 
   export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
-
-
-  export const QueryMode: {
-    default: 'default',
-    insensitive: 'insensitive'
-  };
-
-  export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
-
-
-  export const SortOrder: {
-    asc: 'asc',
-    desc: 'desc'
-  };
-
-  export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
   export const StudentScalarFieldEnum: {
@@ -4877,26 +5231,131 @@ export namespace Prisma {
   export type StudentScalarFieldEnum = (typeof StudentScalarFieldEnum)[keyof typeof StudentScalarFieldEnum]
 
 
-  export const TransactionIsolationLevel: {
-    Serializable: 'Serializable'
+  export const MentorScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    isApproved: 'isApproved',
+    tgChatId: 'tgChatId',
+    tgUserId: 'tgUserId',
+    tgUsername: 'tgUsername',
+    projectId: 'projectId'
   };
 
-  export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+  export type MentorScalarFieldEnum = (typeof MentorScalarFieldEnum)[keyof typeof MentorScalarFieldEnum]
 
 
+  export const AdminScalarFieldEnum: {
+    id: 'id',
+    tgChatId: 'tgChatId',
+    tgUserId: 'tgUserId'
+  };
+
+  export type AdminScalarFieldEnum = (typeof AdminScalarFieldEnum)[keyof typeof AdminScalarFieldEnum]
+
+
+  export const SortOrder: {
+    asc: 'asc',
+    desc: 'desc'
+  };
+
+  export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const QueryMode: {
+    default: 'default',
+    insensitive: 'insensitive'
+  };
+
+  export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  /**
+   * Field references 
+   */
+
+
+  /**
+   * Reference to a field of type 'BigInt'
+   */
+  export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
+    
+
+
+  /**
+   * Reference to a field of type 'BigInt[]'
+   */
+  export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'String'
+   */
+  export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
+    
+
+
+  /**
+   * Reference to a field of type 'String[]'
+   */
+  export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
   /**
    * Deep Input Types
    */
 
 
   export type ProjectWhereInput = {
-    AND?: Enumerable<ProjectWhereInput>
-    OR?: Enumerable<ProjectWhereInput>
-    NOT?: Enumerable<ProjectWhereInput>
-    id?: BigIntFilter | bigint | number
-    name?: StringFilter | string
-    description?: StringFilter | string
-    mentor?: XOR<MentorRelationFilter, MentorWhereInput> | null
+    AND?: ProjectWhereInput | ProjectWhereInput[]
+    OR?: ProjectWhereInput[]
+    NOT?: ProjectWhereInput | ProjectWhereInput[]
+    id?: BigIntFilter<"Project"> | bigint | number
+    name?: StringFilter<"Project"> | string
+    description?: StringFilter<"Project"> | string
+    mentor?: XOR<MentorNullableRelationFilter, MentorWhereInput> | null
     students?: StudentListRelationFilter
   }
 
@@ -4908,9 +5367,16 @@ export namespace Prisma {
     students?: StudentOrderByRelationAggregateInput
   }
 
-  export type ProjectWhereUniqueInput = {
+  export type ProjectWhereUniqueInput = Prisma.AtLeast<{
     id?: bigint | number
-  }
+    AND?: ProjectWhereInput | ProjectWhereInput[]
+    OR?: ProjectWhereInput[]
+    NOT?: ProjectWhereInput | ProjectWhereInput[]
+    name?: StringFilter<"Project"> | string
+    description?: StringFilter<"Project"> | string
+    mentor?: XOR<MentorNullableRelationFilter, MentorWhereInput> | null
+    students?: StudentListRelationFilter
+  }, "id">
 
   export type ProjectOrderByWithAggregationInput = {
     id?: SortOrder
@@ -4924,29 +5390,29 @@ export namespace Prisma {
   }
 
   export type ProjectScalarWhereWithAggregatesInput = {
-    AND?: Enumerable<ProjectScalarWhereWithAggregatesInput>
-    OR?: Enumerable<ProjectScalarWhereWithAggregatesInput>
-    NOT?: Enumerable<ProjectScalarWhereWithAggregatesInput>
-    id?: BigIntWithAggregatesFilter | bigint | number
-    name?: StringWithAggregatesFilter | string
-    description?: StringWithAggregatesFilter | string
+    AND?: ProjectScalarWhereWithAggregatesInput | ProjectScalarWhereWithAggregatesInput[]
+    OR?: ProjectScalarWhereWithAggregatesInput[]
+    NOT?: ProjectScalarWhereWithAggregatesInput | ProjectScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"Project"> | bigint | number
+    name?: StringWithAggregatesFilter<"Project"> | string
+    description?: StringWithAggregatesFilter<"Project"> | string
   }
 
   export type StudentWhereInput = {
-    AND?: Enumerable<StudentWhereInput>
-    OR?: Enumerable<StudentWhereInput>
-    NOT?: Enumerable<StudentWhereInput>
-    id?: BigIntFilter | bigint | number
-    name?: StringFilter | string
-    group?: StringFilter | string
-    isApproved?: BoolFilter | boolean
-    stars?: IntFilter | number
-    hearts?: IntFilter | number
-    tgChatId?: BigIntFilter | bigint | number
-    tgUserId?: BigIntFilter | bigint | number
-    tgUsername?: StringNullableFilter | string | null
-    projectId?: BigIntNullableFilter | bigint | number | null
-    project?: XOR<ProjectRelationFilter, ProjectWhereInput> | null
+    AND?: StudentWhereInput | StudentWhereInput[]
+    OR?: StudentWhereInput[]
+    NOT?: StudentWhereInput | StudentWhereInput[]
+    id?: BigIntFilter<"Student"> | bigint | number
+    name?: StringFilter<"Student"> | string
+    group?: StringFilter<"Student"> | string
+    isApproved?: BoolFilter<"Student"> | boolean
+    stars?: IntFilter<"Student"> | number
+    hearts?: IntFilter<"Student"> | number
+    tgChatId?: BigIntFilter<"Student"> | bigint | number
+    tgUserId?: BigIntFilter<"Student"> | bigint | number
+    tgUsername?: StringNullableFilter<"Student"> | string | null
+    projectId?: BigIntNullableFilter<"Student"> | bigint | number | null
+    project?: XOR<ProjectNullableRelationFilter, ProjectWhereInput> | null
   }
 
   export type StudentOrderByWithRelationInput = {
@@ -4958,17 +5424,27 @@ export namespace Prisma {
     hearts?: SortOrder
     tgChatId?: SortOrder
     tgUserId?: SortOrder
-    tgUsername?: SortOrder
-    projectId?: SortOrder
+    tgUsername?: SortOrderInput | SortOrder
+    projectId?: SortOrderInput | SortOrder
     project?: ProjectOrderByWithRelationInput
   }
 
-  export type StudentWhereUniqueInput = {
+  export type StudentWhereUniqueInput = Prisma.AtLeast<{
     id?: bigint | number
     tgChatId?: bigint | number
     tgUserId?: bigint | number
     tgUsername?: string
-  }
+    AND?: StudentWhereInput | StudentWhereInput[]
+    OR?: StudentWhereInput[]
+    NOT?: StudentWhereInput | StudentWhereInput[]
+    name?: StringFilter<"Student"> | string
+    group?: StringFilter<"Student"> | string
+    isApproved?: BoolFilter<"Student"> | boolean
+    stars?: IntFilter<"Student"> | number
+    hearts?: IntFilter<"Student"> | number
+    projectId?: BigIntNullableFilter<"Student"> | bigint | number | null
+    project?: XOR<ProjectNullableRelationFilter, ProjectWhereInput> | null
+  }, "id" | "tgChatId" | "tgUserId" | "tgUsername">
 
   export type StudentOrderByWithAggregationInput = {
     id?: SortOrder
@@ -4979,8 +5455,8 @@ export namespace Prisma {
     hearts?: SortOrder
     tgChatId?: SortOrder
     tgUserId?: SortOrder
-    tgUsername?: SortOrder
-    projectId?: SortOrder
+    tgUsername?: SortOrderInput | SortOrder
+    projectId?: SortOrderInput | SortOrder
     _count?: StudentCountOrderByAggregateInput
     _avg?: StudentAvgOrderByAggregateInput
     _max?: StudentMaxOrderByAggregateInput
@@ -4989,33 +5465,33 @@ export namespace Prisma {
   }
 
   export type StudentScalarWhereWithAggregatesInput = {
-    AND?: Enumerable<StudentScalarWhereWithAggregatesInput>
-    OR?: Enumerable<StudentScalarWhereWithAggregatesInput>
-    NOT?: Enumerable<StudentScalarWhereWithAggregatesInput>
-    id?: BigIntWithAggregatesFilter | bigint | number
-    name?: StringWithAggregatesFilter | string
-    group?: StringWithAggregatesFilter | string
-    isApproved?: BoolWithAggregatesFilter | boolean
-    stars?: IntWithAggregatesFilter | number
-    hearts?: IntWithAggregatesFilter | number
-    tgChatId?: BigIntWithAggregatesFilter | bigint | number
-    tgUserId?: BigIntWithAggregatesFilter | bigint | number
-    tgUsername?: StringNullableWithAggregatesFilter | string | null
-    projectId?: BigIntNullableWithAggregatesFilter | bigint | number | null
+    AND?: StudentScalarWhereWithAggregatesInput | StudentScalarWhereWithAggregatesInput[]
+    OR?: StudentScalarWhereWithAggregatesInput[]
+    NOT?: StudentScalarWhereWithAggregatesInput | StudentScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"Student"> | bigint | number
+    name?: StringWithAggregatesFilter<"Student"> | string
+    group?: StringWithAggregatesFilter<"Student"> | string
+    isApproved?: BoolWithAggregatesFilter<"Student"> | boolean
+    stars?: IntWithAggregatesFilter<"Student"> | number
+    hearts?: IntWithAggregatesFilter<"Student"> | number
+    tgChatId?: BigIntWithAggregatesFilter<"Student"> | bigint | number
+    tgUserId?: BigIntWithAggregatesFilter<"Student"> | bigint | number
+    tgUsername?: StringNullableWithAggregatesFilter<"Student"> | string | null
+    projectId?: BigIntNullableWithAggregatesFilter<"Student"> | bigint | number | null
   }
 
   export type MentorWhereInput = {
-    AND?: Enumerable<MentorWhereInput>
-    OR?: Enumerable<MentorWhereInput>
-    NOT?: Enumerable<MentorWhereInput>
-    id?: BigIntFilter | bigint | number
-    name?: StringFilter | string
-    isApproved?: BoolFilter | boolean
-    tgChatId?: BigIntFilter | bigint | number
-    tgUserId?: BigIntFilter | bigint | number
-    tgUsername?: StringNullableFilter | string | null
-    projectId?: BigIntNullableFilter | bigint | number | null
-    project?: XOR<ProjectRelationFilter, ProjectWhereInput> | null
+    AND?: MentorWhereInput | MentorWhereInput[]
+    OR?: MentorWhereInput[]
+    NOT?: MentorWhereInput | MentorWhereInput[]
+    id?: BigIntFilter<"Mentor"> | bigint | number
+    name?: StringFilter<"Mentor"> | string
+    isApproved?: BoolFilter<"Mentor"> | boolean
+    tgChatId?: BigIntFilter<"Mentor"> | bigint | number
+    tgUserId?: BigIntFilter<"Mentor"> | bigint | number
+    tgUsername?: StringNullableFilter<"Mentor"> | string | null
+    projectId?: BigIntNullableFilter<"Mentor"> | bigint | number | null
+    project?: XOR<ProjectNullableRelationFilter, ProjectWhereInput> | null
   }
 
   export type MentorOrderByWithRelationInput = {
@@ -5024,18 +5500,24 @@ export namespace Prisma {
     isApproved?: SortOrder
     tgChatId?: SortOrder
     tgUserId?: SortOrder
-    tgUsername?: SortOrder
-    projectId?: SortOrder
+    tgUsername?: SortOrderInput | SortOrder
+    projectId?: SortOrderInput | SortOrder
     project?: ProjectOrderByWithRelationInput
   }
 
-  export type MentorWhereUniqueInput = {
+  export type MentorWhereUniqueInput = Prisma.AtLeast<{
     id?: bigint | number
     tgChatId?: bigint | number
     tgUserId?: bigint | number
     tgUsername?: string
     projectId?: bigint | number
-  }
+    AND?: MentorWhereInput | MentorWhereInput[]
+    OR?: MentorWhereInput[]
+    NOT?: MentorWhereInput | MentorWhereInput[]
+    name?: StringFilter<"Mentor"> | string
+    isApproved?: BoolFilter<"Mentor"> | boolean
+    project?: XOR<ProjectNullableRelationFilter, ProjectWhereInput> | null
+  }, "id" | "tgChatId" | "tgUserId" | "tgUsername" | "projectId">
 
   export type MentorOrderByWithAggregationInput = {
     id?: SortOrder
@@ -5043,8 +5525,8 @@ export namespace Prisma {
     isApproved?: SortOrder
     tgChatId?: SortOrder
     tgUserId?: SortOrder
-    tgUsername?: SortOrder
-    projectId?: SortOrder
+    tgUsername?: SortOrderInput | SortOrder
+    projectId?: SortOrderInput | SortOrder
     _count?: MentorCountOrderByAggregateInput
     _avg?: MentorAvgOrderByAggregateInput
     _max?: MentorMaxOrderByAggregateInput
@@ -5053,25 +5535,25 @@ export namespace Prisma {
   }
 
   export type MentorScalarWhereWithAggregatesInput = {
-    AND?: Enumerable<MentorScalarWhereWithAggregatesInput>
-    OR?: Enumerable<MentorScalarWhereWithAggregatesInput>
-    NOT?: Enumerable<MentorScalarWhereWithAggregatesInput>
-    id?: BigIntWithAggregatesFilter | bigint | number
-    name?: StringWithAggregatesFilter | string
-    isApproved?: BoolWithAggregatesFilter | boolean
-    tgChatId?: BigIntWithAggregatesFilter | bigint | number
-    tgUserId?: BigIntWithAggregatesFilter | bigint | number
-    tgUsername?: StringNullableWithAggregatesFilter | string | null
-    projectId?: BigIntNullableWithAggregatesFilter | bigint | number | null
+    AND?: MentorScalarWhereWithAggregatesInput | MentorScalarWhereWithAggregatesInput[]
+    OR?: MentorScalarWhereWithAggregatesInput[]
+    NOT?: MentorScalarWhereWithAggregatesInput | MentorScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"Mentor"> | bigint | number
+    name?: StringWithAggregatesFilter<"Mentor"> | string
+    isApproved?: BoolWithAggregatesFilter<"Mentor"> | boolean
+    tgChatId?: BigIntWithAggregatesFilter<"Mentor"> | bigint | number
+    tgUserId?: BigIntWithAggregatesFilter<"Mentor"> | bigint | number
+    tgUsername?: StringNullableWithAggregatesFilter<"Mentor"> | string | null
+    projectId?: BigIntNullableWithAggregatesFilter<"Mentor"> | bigint | number | null
   }
 
   export type AdminWhereInput = {
-    AND?: Enumerable<AdminWhereInput>
-    OR?: Enumerable<AdminWhereInput>
-    NOT?: Enumerable<AdminWhereInput>
-    id?: BigIntFilter | bigint | number
-    tgChatId?: BigIntFilter | bigint | number
-    tgUserId?: BigIntFilter | bigint | number
+    AND?: AdminWhereInput | AdminWhereInput[]
+    OR?: AdminWhereInput[]
+    NOT?: AdminWhereInput | AdminWhereInput[]
+    id?: BigIntFilter<"Admin"> | bigint | number
+    tgChatId?: BigIntFilter<"Admin"> | bigint | number
+    tgUserId?: BigIntFilter<"Admin"> | bigint | number
   }
 
   export type AdminOrderByWithRelationInput = {
@@ -5080,11 +5562,14 @@ export namespace Prisma {
     tgUserId?: SortOrder
   }
 
-  export type AdminWhereUniqueInput = {
+  export type AdminWhereUniqueInput = Prisma.AtLeast<{
     id?: bigint | number
     tgChatId?: bigint | number
     tgUserId?: bigint | number
-  }
+    AND?: AdminWhereInput | AdminWhereInput[]
+    OR?: AdminWhereInput[]
+    NOT?: AdminWhereInput | AdminWhereInput[]
+  }, "id" | "tgChatId" | "tgUserId">
 
   export type AdminOrderByWithAggregationInput = {
     id?: SortOrder
@@ -5098,12 +5583,12 @@ export namespace Prisma {
   }
 
   export type AdminScalarWhereWithAggregatesInput = {
-    AND?: Enumerable<AdminScalarWhereWithAggregatesInput>
-    OR?: Enumerable<AdminScalarWhereWithAggregatesInput>
-    NOT?: Enumerable<AdminScalarWhereWithAggregatesInput>
-    id?: BigIntWithAggregatesFilter | bigint | number
-    tgChatId?: BigIntWithAggregatesFilter | bigint | number
-    tgUserId?: BigIntWithAggregatesFilter | bigint | number
+    AND?: AdminScalarWhereWithAggregatesInput | AdminScalarWhereWithAggregatesInput[]
+    OR?: AdminScalarWhereWithAggregatesInput[]
+    NOT?: AdminScalarWhereWithAggregatesInput | AdminScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"Admin"> | bigint | number
+    tgChatId?: BigIntWithAggregatesFilter<"Admin"> | bigint | number
+    tgUserId?: BigIntWithAggregatesFilter<"Admin"> | bigint | number
   }
 
   export type ProjectCreateInput = {
@@ -5357,33 +5842,33 @@ export namespace Prisma {
     tgUserId?: BigIntFieldUpdateOperationsInput | bigint | number
   }
 
-  export type BigIntFilter = {
-    equals?: bigint | number
-    in?: Enumerable<bigint> | Enumerable<number>
-    notIn?: Enumerable<bigint> | Enumerable<number>
-    lt?: bigint | number
-    lte?: bigint | number
-    gt?: bigint | number
-    gte?: bigint | number
-    not?: NestedBigIntFilter | bigint | number
+  export type BigIntFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntFilter<$PrismaModel> | bigint | number
   }
 
-  export type StringFilter = {
-    equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
+  export type StringFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
-    not?: NestedStringFilter | string
+    not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type MentorRelationFilter = {
+  export type MentorNullableRelationFilter = {
     is?: MentorWhereInput | null
     isNot?: MentorWhereInput | null
   }
@@ -5424,85 +5909,90 @@ export namespace Prisma {
     id?: SortOrder
   }
 
-  export type BigIntWithAggregatesFilter = {
-    equals?: bigint | number
-    in?: Enumerable<bigint> | Enumerable<number>
-    notIn?: Enumerable<bigint> | Enumerable<number>
-    lt?: bigint | number
-    lte?: bigint | number
-    gt?: bigint | number
-    gte?: bigint | number
-    not?: NestedBigIntWithAggregatesFilter | bigint | number
-    _count?: NestedIntFilter
-    _avg?: NestedFloatFilter
-    _sum?: NestedBigIntFilter
-    _min?: NestedBigIntFilter
-    _max?: NestedBigIntFilter
+  export type BigIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedBigIntFilter<$PrismaModel>
+    _min?: NestedBigIntFilter<$PrismaModel>
+    _max?: NestedBigIntFilter<$PrismaModel>
   }
 
-  export type StringWithAggregatesFilter = {
-    equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
+  export type StringWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
-    not?: NestedStringWithAggregatesFilter | string
-    _count?: NestedIntFilter
-    _min?: NestedStringFilter
-    _max?: NestedStringFilter
+    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type BoolFilter = {
-    equals?: boolean
-    not?: NestedBoolFilter | boolean
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type IntFilter = {
-    equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntFilter | number
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
   }
 
-  export type StringNullableFilter = {
-    equals?: string | null
-    in?: Enumerable<string> | null
-    notIn?: Enumerable<string> | null
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
-    not?: NestedStringNullableFilter | string | null
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type BigIntNullableFilter = {
-    equals?: bigint | number | null
-    in?: Enumerable<bigint> | Enumerable<number> | null
-    notIn?: Enumerable<bigint> | Enumerable<number> | null
-    lt?: bigint | number
-    lte?: bigint | number
-    gt?: bigint | number
-    gte?: bigint | number
-    not?: NestedBigIntNullableFilter | bigint | number | null
+  export type BigIntNullableFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
   }
 
-  export type ProjectRelationFilter = {
+  export type ProjectNullableRelationFilter = {
     is?: ProjectWhereInput | null
     isNot?: ProjectWhereInput | null
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
   }
 
   export type StudentCountOrderByAggregateInput = {
@@ -5562,62 +6052,62 @@ export namespace Prisma {
     projectId?: SortOrder
   }
 
-  export type BoolWithAggregatesFilter = {
-    equals?: boolean
-    not?: NestedBoolWithAggregatesFilter | boolean
-    _count?: NestedIntFilter
-    _min?: NestedBoolFilter
-    _max?: NestedBoolFilter
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type IntWithAggregatesFilter = {
-    equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntWithAggregatesFilter | number
-    _count?: NestedIntFilter
-    _avg?: NestedFloatFilter
-    _sum?: NestedIntFilter
-    _min?: NestedIntFilter
-    _max?: NestedIntFilter
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
-  export type StringNullableWithAggregatesFilter = {
-    equals?: string | null
-    in?: Enumerable<string> | null
-    notIn?: Enumerable<string> | null
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter | string | null
-    _count?: NestedIntNullableFilter
-    _min?: NestedStringNullableFilter
-    _max?: NestedStringNullableFilter
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type BigIntNullableWithAggregatesFilter = {
-    equals?: bigint | number | null
-    in?: Enumerable<bigint> | Enumerable<number> | null
-    notIn?: Enumerable<bigint> | Enumerable<number> | null
-    lt?: bigint | number
-    lte?: bigint | number
-    gt?: bigint | number
-    gte?: bigint | number
-    not?: NestedBigIntNullableWithAggregatesFilter | bigint | number | null
-    _count?: NestedIntNullableFilter
-    _avg?: NestedFloatNullableFilter
-    _sum?: NestedBigIntNullableFilter
-    _min?: NestedBigIntNullableFilter
-    _max?: NestedBigIntNullableFilter
+  export type BigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedBigIntNullableFilter<$PrismaModel>
+    _min?: NestedBigIntNullableFilter<$PrismaModel>
+    _max?: NestedBigIntNullableFilter<$PrismaModel>
   }
 
   export type MentorCountOrderByAggregateInput = {
@@ -5701,10 +6191,10 @@ export namespace Prisma {
   }
 
   export type StudentCreateNestedManyWithoutProjectInput = {
-    create?: XOR<Enumerable<StudentCreateWithoutProjectInput>, Enumerable<StudentUncheckedCreateWithoutProjectInput>>
-    connectOrCreate?: Enumerable<StudentCreateOrConnectWithoutProjectInput>
+    create?: XOR<StudentCreateWithoutProjectInput, StudentUncheckedCreateWithoutProjectInput> | StudentCreateWithoutProjectInput[] | StudentUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: StudentCreateOrConnectWithoutProjectInput | StudentCreateOrConnectWithoutProjectInput[]
     createMany?: StudentCreateManyProjectInputEnvelope
-    connect?: Enumerable<StudentWhereUniqueInput>
+    connect?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
   }
 
   export type MentorUncheckedCreateNestedOneWithoutProjectInput = {
@@ -5714,10 +6204,10 @@ export namespace Prisma {
   }
 
   export type StudentUncheckedCreateNestedManyWithoutProjectInput = {
-    create?: XOR<Enumerable<StudentCreateWithoutProjectInput>, Enumerable<StudentUncheckedCreateWithoutProjectInput>>
-    connectOrCreate?: Enumerable<StudentCreateOrConnectWithoutProjectInput>
+    create?: XOR<StudentCreateWithoutProjectInput, StudentUncheckedCreateWithoutProjectInput> | StudentCreateWithoutProjectInput[] | StudentUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: StudentCreateOrConnectWithoutProjectInput | StudentCreateOrConnectWithoutProjectInput[]
     createMany?: StudentCreateManyProjectInputEnvelope
-    connect?: Enumerable<StudentWhereUniqueInput>
+    connect?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
   }
 
   export type BigIntFieldUpdateOperationsInput = {
@@ -5736,48 +6226,48 @@ export namespace Prisma {
     create?: XOR<MentorCreateWithoutProjectInput, MentorUncheckedCreateWithoutProjectInput>
     connectOrCreate?: MentorCreateOrConnectWithoutProjectInput
     upsert?: MentorUpsertWithoutProjectInput
-    disconnect?: boolean
-    delete?: boolean
+    disconnect?: MentorWhereInput | boolean
+    delete?: MentorWhereInput | boolean
     connect?: MentorWhereUniqueInput
-    update?: XOR<MentorUpdateWithoutProjectInput, MentorUncheckedUpdateWithoutProjectInput>
+    update?: XOR<XOR<MentorUpdateToOneWithWhereWithoutProjectInput, MentorUpdateWithoutProjectInput>, MentorUncheckedUpdateWithoutProjectInput>
   }
 
   export type StudentUpdateManyWithoutProjectNestedInput = {
-    create?: XOR<Enumerable<StudentCreateWithoutProjectInput>, Enumerable<StudentUncheckedCreateWithoutProjectInput>>
-    connectOrCreate?: Enumerable<StudentCreateOrConnectWithoutProjectInput>
-    upsert?: Enumerable<StudentUpsertWithWhereUniqueWithoutProjectInput>
+    create?: XOR<StudentCreateWithoutProjectInput, StudentUncheckedCreateWithoutProjectInput> | StudentCreateWithoutProjectInput[] | StudentUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: StudentCreateOrConnectWithoutProjectInput | StudentCreateOrConnectWithoutProjectInput[]
+    upsert?: StudentUpsertWithWhereUniqueWithoutProjectInput | StudentUpsertWithWhereUniqueWithoutProjectInput[]
     createMany?: StudentCreateManyProjectInputEnvelope
-    set?: Enumerable<StudentWhereUniqueInput>
-    disconnect?: Enumerable<StudentWhereUniqueInput>
-    delete?: Enumerable<StudentWhereUniqueInput>
-    connect?: Enumerable<StudentWhereUniqueInput>
-    update?: Enumerable<StudentUpdateWithWhereUniqueWithoutProjectInput>
-    updateMany?: Enumerable<StudentUpdateManyWithWhereWithoutProjectInput>
-    deleteMany?: Enumerable<StudentScalarWhereInput>
+    set?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
+    disconnect?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
+    delete?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
+    connect?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
+    update?: StudentUpdateWithWhereUniqueWithoutProjectInput | StudentUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: StudentUpdateManyWithWhereWithoutProjectInput | StudentUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: StudentScalarWhereInput | StudentScalarWhereInput[]
   }
 
   export type MentorUncheckedUpdateOneWithoutProjectNestedInput = {
     create?: XOR<MentorCreateWithoutProjectInput, MentorUncheckedCreateWithoutProjectInput>
     connectOrCreate?: MentorCreateOrConnectWithoutProjectInput
     upsert?: MentorUpsertWithoutProjectInput
-    disconnect?: boolean
-    delete?: boolean
+    disconnect?: MentorWhereInput | boolean
+    delete?: MentorWhereInput | boolean
     connect?: MentorWhereUniqueInput
-    update?: XOR<MentorUpdateWithoutProjectInput, MentorUncheckedUpdateWithoutProjectInput>
+    update?: XOR<XOR<MentorUpdateToOneWithWhereWithoutProjectInput, MentorUpdateWithoutProjectInput>, MentorUncheckedUpdateWithoutProjectInput>
   }
 
   export type StudentUncheckedUpdateManyWithoutProjectNestedInput = {
-    create?: XOR<Enumerable<StudentCreateWithoutProjectInput>, Enumerable<StudentUncheckedCreateWithoutProjectInput>>
-    connectOrCreate?: Enumerable<StudentCreateOrConnectWithoutProjectInput>
-    upsert?: Enumerable<StudentUpsertWithWhereUniqueWithoutProjectInput>
+    create?: XOR<StudentCreateWithoutProjectInput, StudentUncheckedCreateWithoutProjectInput> | StudentCreateWithoutProjectInput[] | StudentUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: StudentCreateOrConnectWithoutProjectInput | StudentCreateOrConnectWithoutProjectInput[]
+    upsert?: StudentUpsertWithWhereUniqueWithoutProjectInput | StudentUpsertWithWhereUniqueWithoutProjectInput[]
     createMany?: StudentCreateManyProjectInputEnvelope
-    set?: Enumerable<StudentWhereUniqueInput>
-    disconnect?: Enumerable<StudentWhereUniqueInput>
-    delete?: Enumerable<StudentWhereUniqueInput>
-    connect?: Enumerable<StudentWhereUniqueInput>
-    update?: Enumerable<StudentUpdateWithWhereUniqueWithoutProjectInput>
-    updateMany?: Enumerable<StudentUpdateManyWithWhereWithoutProjectInput>
-    deleteMany?: Enumerable<StudentScalarWhereInput>
+    set?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
+    disconnect?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
+    delete?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
+    connect?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
+    update?: StudentUpdateWithWhereUniqueWithoutProjectInput | StudentUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: StudentUpdateManyWithWhereWithoutProjectInput | StudentUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: StudentScalarWhereInput | StudentScalarWhereInput[]
   }
 
   export type ProjectCreateNestedOneWithoutStudentsInput = {
@@ -5806,10 +6296,10 @@ export namespace Prisma {
     create?: XOR<ProjectCreateWithoutStudentsInput, ProjectUncheckedCreateWithoutStudentsInput>
     connectOrCreate?: ProjectCreateOrConnectWithoutStudentsInput
     upsert?: ProjectUpsertWithoutStudentsInput
-    disconnect?: boolean
-    delete?: boolean
+    disconnect?: ProjectWhereInput | boolean
+    delete?: ProjectWhereInput | boolean
     connect?: ProjectWhereUniqueInput
-    update?: XOR<ProjectUpdateWithoutStudentsInput, ProjectUncheckedUpdateWithoutStudentsInput>
+    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutStudentsInput, ProjectUpdateWithoutStudentsInput>, ProjectUncheckedUpdateWithoutStudentsInput>
   }
 
   export type NullableBigIntFieldUpdateOperationsInput = {
@@ -5830,199 +6320,199 @@ export namespace Prisma {
     create?: XOR<ProjectCreateWithoutMentorInput, ProjectUncheckedCreateWithoutMentorInput>
     connectOrCreate?: ProjectCreateOrConnectWithoutMentorInput
     upsert?: ProjectUpsertWithoutMentorInput
-    disconnect?: boolean
-    delete?: boolean
+    disconnect?: ProjectWhereInput | boolean
+    delete?: ProjectWhereInput | boolean
     connect?: ProjectWhereUniqueInput
-    update?: XOR<ProjectUpdateWithoutMentorInput, ProjectUncheckedUpdateWithoutMentorInput>
+    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutMentorInput, ProjectUpdateWithoutMentorInput>, ProjectUncheckedUpdateWithoutMentorInput>
   }
 
-  export type NestedBigIntFilter = {
-    equals?: bigint | number
-    in?: Enumerable<bigint> | Enumerable<number>
-    notIn?: Enumerable<bigint> | Enumerable<number>
-    lt?: bigint | number
-    lte?: bigint | number
-    gt?: bigint | number
-    gte?: bigint | number
-    not?: NestedBigIntFilter | bigint | number
+  export type NestedBigIntFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntFilter<$PrismaModel> | bigint | number
   }
 
-  export type NestedStringFilter = {
-    equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
-    not?: NestedStringFilter | string
+  export type NestedStringFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type NestedBigIntWithAggregatesFilter = {
-    equals?: bigint | number
-    in?: Enumerable<bigint> | Enumerable<number>
-    notIn?: Enumerable<bigint> | Enumerable<number>
-    lt?: bigint | number
-    lte?: bigint | number
-    gt?: bigint | number
-    gte?: bigint | number
-    not?: NestedBigIntWithAggregatesFilter | bigint | number
-    _count?: NestedIntFilter
-    _avg?: NestedFloatFilter
-    _sum?: NestedBigIntFilter
-    _min?: NestedBigIntFilter
-    _max?: NestedBigIntFilter
+  export type NestedBigIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedBigIntFilter<$PrismaModel>
+    _min?: NestedBigIntFilter<$PrismaModel>
+    _max?: NestedBigIntFilter<$PrismaModel>
   }
 
-  export type NestedIntFilter = {
-    equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntFilter | number
+  export type NestedIntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
   }
 
-  export type NestedFloatFilter = {
-    equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedFloatFilter | number
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type NestedStringWithAggregatesFilter = {
-    equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
-    not?: NestedStringWithAggregatesFilter | string
-    _count?: NestedIntFilter
-    _min?: NestedStringFilter
-    _max?: NestedStringFilter
+  export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type NestedBoolFilter = {
-    equals?: boolean
-    not?: NestedBoolFilter | boolean
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type NestedStringNullableFilter = {
-    equals?: string | null
-    in?: Enumerable<string> | null
-    notIn?: Enumerable<string> | null
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
-    not?: NestedStringNullableFilter | string | null
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type NestedBigIntNullableFilter = {
-    equals?: bigint | number | null
-    in?: Enumerable<bigint> | Enumerable<number> | null
-    notIn?: Enumerable<bigint> | Enumerable<number> | null
-    lt?: bigint | number
-    lte?: bigint | number
-    gt?: bigint | number
-    gte?: bigint | number
-    not?: NestedBigIntNullableFilter | bigint | number | null
+  export type NestedBigIntNullableFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
   }
 
-  export type NestedBoolWithAggregatesFilter = {
-    equals?: boolean
-    not?: NestedBoolWithAggregatesFilter | boolean
-    _count?: NestedIntFilter
-    _min?: NestedBoolFilter
-    _max?: NestedBoolFilter
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type NestedIntWithAggregatesFilter = {
-    equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntWithAggregatesFilter | number
-    _count?: NestedIntFilter
-    _avg?: NestedFloatFilter
-    _sum?: NestedIntFilter
-    _min?: NestedIntFilter
-    _max?: NestedIntFilter
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
-  export type NestedStringNullableWithAggregatesFilter = {
-    equals?: string | null
-    in?: Enumerable<string> | null
-    notIn?: Enumerable<string> | null
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
-    not?: NestedStringNullableWithAggregatesFilter | string | null
-    _count?: NestedIntNullableFilter
-    _min?: NestedStringNullableFilter
-    _max?: NestedStringNullableFilter
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type NestedIntNullableFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntNullableFilter | number | null
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedBigIntNullableWithAggregatesFilter = {
-    equals?: bigint | number | null
-    in?: Enumerable<bigint> | Enumerable<number> | null
-    notIn?: Enumerable<bigint> | Enumerable<number> | null
-    lt?: bigint | number
-    lte?: bigint | number
-    gt?: bigint | number
-    gte?: bigint | number
-    not?: NestedBigIntNullableWithAggregatesFilter | bigint | number | null
-    _count?: NestedIntNullableFilter
-    _avg?: NestedFloatNullableFilter
-    _sum?: NestedBigIntNullableFilter
-    _min?: NestedBigIntNullableFilter
-    _max?: NestedBigIntNullableFilter
+  export type NestedBigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedBigIntNullableFilter<$PrismaModel>
+    _min?: NestedBigIntNullableFilter<$PrismaModel>
+    _max?: NestedBigIntNullableFilter<$PrismaModel>
   }
 
-  export type NestedFloatNullableFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedFloatNullableFilter | number | null
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type MentorCreateWithoutProjectInput = {
@@ -6078,13 +6568,19 @@ export namespace Prisma {
   }
 
   export type StudentCreateManyProjectInputEnvelope = {
-    data: Enumerable<StudentCreateManyProjectInput>
+    data: StudentCreateManyProjectInput | StudentCreateManyProjectInput[]
     skipDuplicates?: boolean
   }
 
   export type MentorUpsertWithoutProjectInput = {
     update: XOR<MentorUpdateWithoutProjectInput, MentorUncheckedUpdateWithoutProjectInput>
     create: XOR<MentorCreateWithoutProjectInput, MentorUncheckedCreateWithoutProjectInput>
+    where?: MentorWhereInput
+  }
+
+  export type MentorUpdateToOneWithWhereWithoutProjectInput = {
+    where?: MentorWhereInput
+    data: XOR<MentorUpdateWithoutProjectInput, MentorUncheckedUpdateWithoutProjectInput>
   }
 
   export type MentorUpdateWithoutProjectInput = {
@@ -6118,23 +6614,23 @@ export namespace Prisma {
 
   export type StudentUpdateManyWithWhereWithoutProjectInput = {
     where: StudentScalarWhereInput
-    data: XOR<StudentUpdateManyMutationInput, StudentUncheckedUpdateManyWithoutStudentsInput>
+    data: XOR<StudentUpdateManyMutationInput, StudentUncheckedUpdateManyWithoutProjectInput>
   }
 
   export type StudentScalarWhereInput = {
-    AND?: Enumerable<StudentScalarWhereInput>
-    OR?: Enumerable<StudentScalarWhereInput>
-    NOT?: Enumerable<StudentScalarWhereInput>
-    id?: BigIntFilter | bigint | number
-    name?: StringFilter | string
-    group?: StringFilter | string
-    isApproved?: BoolFilter | boolean
-    stars?: IntFilter | number
-    hearts?: IntFilter | number
-    tgChatId?: BigIntFilter | bigint | number
-    tgUserId?: BigIntFilter | bigint | number
-    tgUsername?: StringNullableFilter | string | null
-    projectId?: BigIntNullableFilter | bigint | number | null
+    AND?: StudentScalarWhereInput | StudentScalarWhereInput[]
+    OR?: StudentScalarWhereInput[]
+    NOT?: StudentScalarWhereInput | StudentScalarWhereInput[]
+    id?: BigIntFilter<"Student"> | bigint | number
+    name?: StringFilter<"Student"> | string
+    group?: StringFilter<"Student"> | string
+    isApproved?: BoolFilter<"Student"> | boolean
+    stars?: IntFilter<"Student"> | number
+    hearts?: IntFilter<"Student"> | number
+    tgChatId?: BigIntFilter<"Student"> | bigint | number
+    tgUserId?: BigIntFilter<"Student"> | bigint | number
+    tgUsername?: StringNullableFilter<"Student"> | string | null
+    projectId?: BigIntNullableFilter<"Student"> | bigint | number | null
   }
 
   export type ProjectCreateWithoutStudentsInput = {
@@ -6159,6 +6655,12 @@ export namespace Prisma {
   export type ProjectUpsertWithoutStudentsInput = {
     update: XOR<ProjectUpdateWithoutStudentsInput, ProjectUncheckedUpdateWithoutStudentsInput>
     create: XOR<ProjectCreateWithoutStudentsInput, ProjectUncheckedCreateWithoutStudentsInput>
+    where?: ProjectWhereInput
+  }
+
+  export type ProjectUpdateToOneWithWhereWithoutStudentsInput = {
+    where?: ProjectWhereInput
+    data: XOR<ProjectUpdateWithoutStudentsInput, ProjectUncheckedUpdateWithoutStudentsInput>
   }
 
   export type ProjectUpdateWithoutStudentsInput = {
@@ -6197,6 +6699,12 @@ export namespace Prisma {
   export type ProjectUpsertWithoutMentorInput = {
     update: XOR<ProjectUpdateWithoutMentorInput, ProjectUncheckedUpdateWithoutMentorInput>
     create: XOR<ProjectCreateWithoutMentorInput, ProjectUncheckedCreateWithoutMentorInput>
+    where?: ProjectWhereInput
+  }
+
+  export type ProjectUpdateToOneWithWhereWithoutMentorInput = {
+    where?: ProjectWhereInput
+    data: XOR<ProjectUpdateWithoutMentorInput, ProjectUncheckedUpdateWithoutMentorInput>
   }
 
   export type ProjectUpdateWithoutMentorInput = {
@@ -6249,7 +6757,7 @@ export namespace Prisma {
     tgUsername?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type StudentUncheckedUpdateManyWithoutStudentsInput = {
+  export type StudentUncheckedUpdateManyWithoutProjectInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: StringFieldUpdateOperationsInput | string
     group?: StringFieldUpdateOperationsInput | string
@@ -6262,6 +6770,30 @@ export namespace Prisma {
   }
 
 
+
+  /**
+   * Aliases for legacy arg types
+   */
+    /**
+     * @deprecated Use ProjectCountOutputTypeDefaultArgs instead
+     */
+    export type ProjectCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ProjectCountOutputTypeDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use ProjectDefaultArgs instead
+     */
+    export type ProjectArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ProjectDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use StudentDefaultArgs instead
+     */
+    export type StudentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = StudentDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use MentorDefaultArgs instead
+     */
+    export type MentorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = MentorDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use AdminDefaultArgs instead
+     */
+    export type AdminArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = AdminDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

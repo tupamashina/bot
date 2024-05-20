@@ -6,6 +6,6 @@
   },
   "tasks": {
     "prisma-push": "deno run -A --unstable npm:prisma db push",
-    "prisma-generate": "deno run -A --unstable npm:prisma generate --data-proxy"
+    "prisma-generate": "deno run -A --unstable npm:prisma generate --no-engine"
   }
 }
